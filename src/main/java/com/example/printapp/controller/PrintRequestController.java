@@ -2,6 +2,7 @@ package com.example.printapp.controller;
 
 import com.example.printapp.model.PrintRequest;
 import com.example.printapp.repository.PrintRequestRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -9,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.support.SessionStatus;
 
 @Controller
-@SessionAttributes("printRequest") // Retain printRequest in session between requests
+@SessionAttributes("printRequest")
 public class PrintRequestController {
 
     private static final double COLOR_RATE = 3.0;
@@ -18,53 +19,64 @@ public class PrintRequestController {
     @Autowired
     private PrintRequestRepository printRequestRepository;
 
-    // Initialize printRequest in session if not present
+    // 🔄 Initialize session object
     @ModelAttribute("printRequest")
     public PrintRequest getPrintRequest() {
         return new PrintRequest();
     }
 
-    // Show the request form
+    // 🧾 Show request form
     @GetMapping("/request")
     public String showRequestForm() {
-        return "request"; // Uses session-backed model attribute
+        return "request";
     }
 
-    // Handle form submission and show submit.html (summary)
+    // 📄 Handle form submission → show summary
     @PostMapping("/submitRequest")
     public String submitRequest(@ModelAttribute("printRequest") PrintRequest printRequest, Model model) {
+
         sanitizeInput(printRequest);
 
-        if (printRequest != null && isValidPrintRequest(printRequest)) {
-            double amount = calculateAmount(printRequest);
-            printRequest.setAmount(amount);
-            model.addAttribute("printRequest", printRequest);
-            return "submit";  // Show submit.html for review (no saving yet)
-        } else {
-            model.addAttribute("error", "Invalid Print Request. Please ensure all fields are filled correctly.");
-            return "request"; // Return to request form with error
+        if (!isValidPrintRequest(printRequest)) {
+            model.addAttribute("error", "Invalid Print Request. Please fill all fields correctly.");
+            return "request";
         }
+
+        double amount = calculateAmount(printRequest);
+        printRequest.setAmount(amount);
+
+        model.addAttribute("printRequest", printRequest);
+
+        return "submit";
     }
 
-    // Handle confirmation (saving) when user clicks "Proceed"
+    // ✅ Confirm & save request
     @PostMapping("/confirmRequest")
     public String confirmRequest(@ModelAttribute("printRequest") PrintRequest printRequest,
                                  Model model,
                                  SessionStatus sessionStatus) {
+
         printRequestRepository.save(printRequest);
-        sessionStatus.setComplete(); // Clear session attribute
-        model.addAttribute("message", "Your print request has been successfully submitted! Please hand over the money to the admin when you collect your documents.");
+
+        // 🧹 Clear session
+        sessionStatus.setComplete();
+
+        model.addAttribute("message",
+                "Your print request has been successfully submitted! Please pay at collection.");
+
         return "confirmation";
     }
 
-    // Calculate amount based on color and pages
+    // 💰 Calculate amount
     private double calculateAmount(PrintRequest printRequest) {
-        return "color".equalsIgnoreCase(printRequest.getColor())
-                ? COLOR_RATE * printRequest.getPages()
-                : BW_RATE * printRequest.getPages();
+        if ("color".equalsIgnoreCase(printRequest.getColor())) {
+            return COLOR_RATE * printRequest.getPages();
+        } else {
+            return BW_RATE * printRequest.getPages();
+        }
     }
 
-    // Validate form fields
+    // ✅ Validation
     private boolean isValidPrintRequest(PrintRequest printRequest) {
         return printRequest.getName() != null && !printRequest.getName().isEmpty()
             && printRequest.getDocumentName() != null && !printRequest.getDocumentName().isEmpty()
@@ -73,16 +85,18 @@ public class PrintRequestController {
             && printRequest.getPages() > 0;
     }
 
-    // Trim inputs to avoid errors from extra spaces
+    // ✂️ Sanitize input
     private void sanitizeInput(PrintRequest printRequest) {
         if (printRequest.getName() != null)
             printRequest.setName(printRequest.getName().trim());
+
         if (printRequest.getDocumentName() != null)
             printRequest.setDocumentName(printRequest.getDocumentName().trim());
+
         if (printRequest.getColor() != null)
             printRequest.setColor(printRequest.getColor().trim());
+
         if (printRequest.getSided() != null)
             printRequest.setSided(printRequest.getSided().trim());
     }
 }
-

@@ -3,171 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <title>Print Request Confirmation</title>
-    <style>
-        :root {
-            --primary-color: #4B7BE5;
-            --accent-color: #FFB545;
-            --bg-color: #f6f9fc;
-            --text-color: #333;
-            --form-bg: #ffffff;
-        }
 
-        body.dark-mode {
-            --bg-color: #121212;
-            --text-color: #f0f0f0;
-            --form-bg: #1e1e1e;
-        }
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            transition: background-color 0.4s ease, color 0.4s ease;
-        }
-
-        .confirmation-box {
-            background-color: var(--form-bg);
-            padding: 40px;
-            border-radius: 16px;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
-            text-align: center;
-            width: 100%;
-            max-width: 500px;
-        }
-
-        h2 {
-            color: #2e7d32;
-            font-size: 26px;
-            margin-bottom: 20px;
-        }
-
-        p {
-            font-size: 18px;
-            color: var(--text-color);
-            margin: 10px 0;
-        }
-
-        .button-wrapper {
-            margin-top: 30px;
-        }
-
-        button {
-            background-color: #0077cc;
-            color: white;
-            border: none;
-            padding: 12px 30px;
-            font-size: 16px;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-
-        button:hover {
-            background-color: #005fa3;
-        }
-
-        .time-info {
-            margin-top: 15px;
-            font-size: 16px;
-            color: var(--text-color);
-        }
-
-        /* Toggle Button */
-        .toggle-btn {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            width: 45px;
-            height: 45px;
-            background-color: var(--primary-color);
-            color: white;
-            border: none;
-            border-radius: 50%;
-            font-size: 20px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: background-color 0.3s ease, transform 0.2s;
-            z-index: 999;
-        }
-
-        .toggle-btn:hover {
-            background-color: #365fcf;
-            transform: scale(1.1);
-        }
-    </style>
+    <!-- Common CSS -->
+    <link rel="stylesheet" href="/style.css">
 </head>
 <body>
 
-<!-- Dark Mode Toggle Button -->
+<!-- 🌙 Dark Mode Toggle Button -->
 <button class="toggle-btn" onclick="toggleDarkMode()" id="toggle-icon">🌙</button>
 
-<div class="confirmation-box">
-    <h2>Request Submitted Successfully ✅</h2>
-    <p>Your print request has been recorded.</p>
-    <p>Thank you for using our service!</p>
-    <p>Please hand over the payment to the admin when you collect your document.</p>
+<div class="form-container">
+    <h2>✅ Request Submitted Successfully</h2>
 
-    <!-- Time and Date -->
-    <div class="time-info">
-        <div id="time"></div>
-        <div id="date"></div>
+    <div class="welcome-message">
+        <p>Your print request has been recorded.</p>
+        <p>Thank you for using our service!</p>
+        <p>Please hand over the payment when collecting your document.</p>
     </div>
 
-    <div class="button-wrapper">
-        <form th:action="@{/request}" method="get">
-            <button type="submit">Make Another Request</button>
-        </form>
+    <!-- ⏰ Time & Date -->
+    <div class="time-display">
+        <p id="current-date"></p>
+        <p id="current-time"></p>
+    </div>
+
+    <!-- 🔁 Action Button -->
+    <form th:action="@{/request}" method="get">
+        <button type="submit">Make Another Request</button>
+    </form>
+
+    <div class="thank-you-note">
+        <p>We appreciate your trust 🙌</p>
     </div>
 </div>
 
-<script>
-    // Dark Mode Logic
-    function toggleDarkMode() {
-        const body = document.body;
-        const icon = document.getElementById("toggle-icon");
-
-        body.classList.toggle('dark-mode');
-        const isDark = body.classList.contains('dark-mode');
-
-        localStorage.setItem("darkMode", isDark ? "enabled" : "disabled");
-        icon.textContent = isDark ? "☀️" : "🌙";
-    }
-
-    document.addEventListener("DOMContentLoaded", () => {
-        if (localStorage.getItem("darkMode") === "enabled") {
-            document.body.classList.add("dark-mode");
-            document.getElementById("toggle-icon").textContent = "☀️";
-        }
-    });
-
-    // Clock & Date Logic
-    function updateTime() {
-        const now = new Date();
-        const hours = now.getHours().toString().padStart(2, '0');
-        const minutes = now.getMinutes().toString().padStart(2, '0');
-        const seconds = now.getSeconds().toString().padStart(2, '0');
-        const time = `${hours}:${minutes}:${seconds}`;
-        document.getElementById('time').innerText = `Current Time: ${time}`;
-
-        const day = now.getDate();
-        const month = now.getMonth() + 1;
-        const year = now.getFullYear();
-        const date = `${day}-${month}-${year}`;
-        document.getElementById('date').innerText = `Date: ${date}`;
-    }
-
-    setInterval(updateTime, 1000);
-    updateTime();
-</script>
+<!-- 🔗 JS -->
+<script src="/theme.js"></script>
 
 </body>
 </html>
-
-
