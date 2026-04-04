@@ -25,14 +25,23 @@ public class SecurityConfig {
             .formLogin(form -> form.disable())
 
             .authorizeHttpRequests(auth -> auth
-                // ✅ Public endpoints (NO AUTH REQUIRED)
-                .requestMatchers("/", "/login", "/signup").permitAll()
-                .requestMatchers("/auth/**").permitAll()
-                .requestMatchers("/request", "/submitRequest", "/confirmRequest").permitAll()
-                .requestMatchers("/style.css", "/theme.js").permitAll()
-                .requestMatchers("/error").permitAll()
+                // ✅ Public endpoints
+                .requestMatchers(
+                    "/",
+                    "/login",
+                    "/signup",
+                    "/auth/**",
+                    "/request",
+                    "/submitRequest",
+                    "/confirmRequest",
+                    "/viewFile/**",        // 🔥 ADD THIS
+                    "/downloadFile/**",    // 🔥 ADD THIS
+                    "/style.css",
+                    "/theme.js",
+                    "/error"
+                ).permitAll()
 
-                // 🔒 Secure everything else (like APIs)
+                // 🔒 Secure everything else
                 .anyRequest().authenticated()
             )
 

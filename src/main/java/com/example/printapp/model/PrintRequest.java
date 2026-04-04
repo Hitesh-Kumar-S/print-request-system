@@ -19,6 +19,8 @@ public class PrintRequest {
     private String sided;
     private double amount;
     private boolean paid;
+    private String fileName;
+    private String filePath;
 
     // Getters and Setters
     public Long getId() {
@@ -83,5 +85,21 @@ public class PrintRequest {
 
     public void setPaid(boolean paid) {
         this.paid = paid;
+    }
+
+    public String getFileName() {
+        return fileName;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }
+
+    public String getFilePath() {
+        return filePath;
+    }
+
+    public void setFilePath(String filePath) {
+        this.filePath = filePath;
     }
 }

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Print Request Confirmation</title>
@@ -12,7 +12,7 @@
 </head>
 <body>
 
-<!-- 🌙 Dark Mode Toggle Button -->
+<!-- 🌙 Dark Mode Toggle -->
 <button class="toggle-btn" onclick="toggleDarkMode()" id="toggle-icon">🌙</button>
 
 <div class="form-container">
@@ -24,7 +24,30 @@
         <p>Please hand over the payment when collecting your document.</p>
     </div>
 
-    <!-- ⏰ Time & Date -->
+    <!-- 📄 FILE DETAILS -->
+    <div style="margin-top:20px; text-align:left;">
+        <p style="font-weight:600; margin-bottom:5px;">📄 Uploaded File:</p>
+
+        <!-- 🔥 FIXED FILE NAME DISPLAY -->
+        <p class="file-name" style="margin-bottom:10px;" 
+           th:text="${printRequest.fileName}">
+        </p>
+
+        <!-- 🔥 VIEW + DOWNLOAD BUTTONS -->
+        <div style="display:flex; gap:20px; flex-wrap:wrap;">
+            <a th:href="@{'/viewFile/' + ${printRequest.id}}" target="_blank"
+               style="color:#8ab4f8; text-decoration:none; font-weight:500;">
+                📄 View File
+            </a>
+
+            <a th:href="@{'/downloadFile/' + ${printRequest.id}}"
+               style="color:#1e90ff; text-decoration:none; font-weight:500;">
+                ⬇ Download File
+            </a>
+        </div>
+    </div>
+
+    <!-- ⏰ Time -->
     <div class="time-display">
         <p id="current-date"></p>
         <p id="current-time"></p>
@@ -40,7 +63,6 @@
     </div>
 </div>
 
-<!-- 🔗 JS -->
 <script src="/theme.js"></script>
 
 </body>

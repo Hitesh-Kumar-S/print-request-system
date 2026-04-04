@@ -127,6 +127,12 @@ button:hover {
     transform: scale(1.1);
 }
 
+.file-name {
+    word-break: break-all;
+    overflow-wrap: break-word;
+    max-width: 100%;
+}
+
 /* 💬 Welcome Text */
 .welcome-message {
     text-align: center;

@@ -9,7 +9,7 @@
     <!-- CSS -->
     <link rel="stylesheet" href="/style.css">
 
-    <!-- 🔐 Auth Check (VERY IMPORTANT) -->
+    <!-- 🔐 Auth Check -->
     <script>
         const token = localStorage.getItem("token");
 
@@ -21,7 +21,7 @@
 </head>
 <body>
 
-<!-- 🌙 Dark Mode Toggle Button -->
+<!-- 🌙 Dark Mode Toggle -->
 <button class="toggle-btn" onclick="toggleDarkMode()" id="toggle-icon">🌙</button>
 
 <div class="form-container">
@@ -30,14 +30,31 @@
     <div class="welcome-message">
         <p>Welcome! Please fill out the form below to make your print request.</p>
     </div>
+
+    <!-- 🔥 ERROR MESSAGE DISPLAY -->
+    <p style="color: red; font-weight: 600;" th:if="${error}" th:text="${error}"></p>
     
-    <form th:action="@{/submitRequest}" method="post" th:object="${printRequest}">
+    <form th:action="@{/submitRequest}" method="post" 
+          th:object="${printRequest}" enctype="multipart/form-data">
         
         <label for="name">Name</label>
         <input type="text" id="name" th:field="*{name}" placeholder="Enter your name" required />
 
         <label for="documentName">Document Name</label>
         <input type="text" id="documentName" th:field="*{documentName}" placeholder="E.g., Resume.pdf" required />
+
+        <label for="file">Upload PDF</label>
+        <input type="file" id="file" name="file" accept="application/pdf" required />
+
+        <div style="font-size: 0.9rem; color: #4B7BE5; margin-top: 5px;">
+            <p style="margin-bottom: 5px; font-weight: 600;">📌 Upload Guidelines:</p>
+            <ul style="margin: 5px 0 10px 15px;">
+                <li>Only PDF files are allowed</li>
+                <li>Maximum file size: 5MB</li>
+                <li>Use a meaningful file name (e.g., Resume.pdf, Notes.pdf)</li>
+                <li>File name will be automatically processed and stored securely</li>
+            </ul>
+        </div>
 
         <label for="pages">Number of Pages</label>
         <input type="number" id="pages" th:field="*{pages}" min="1" placeholder="Enter number of pages" required />
@@ -67,7 +84,6 @@
     </div>
 </div>
 
-<!-- 🔗 JS FILE -->
 <script src="/theme.js"></script>
 
 </body>
