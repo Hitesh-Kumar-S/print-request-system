@@ -1,57 +1,134 @@
 package com.example.printapp.security;
 
-import jakarta.servlet.http.HttpServletResponse;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+
+import org.springframework.security.core.userdetails.UserDetailsService;
+
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 public class SecurityConfig {
 
     @Autowired
-    private JwtFilter jwtFilter;
+    private UserDetailsService userDetailsService;
+
+    @Autowired
+private CustomAuthenticationSuccessHandler
+        customAuthenticationSuccessHandler;
+
+    // =========================
+    // Password Encoder
+    // =========================
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
+    // =========================
+    // Authentication Manager
+    // =========================
+
+    @Bean
+    public AuthenticationManager authenticationManager(
+            AuthenticationConfiguration config) throws Exception {
+
+        return config.getAuthenticationManager();
+    }
+
+    // =========================
+    // Security Filter Chain
+    // =========================
+
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http)
+            throws Exception {
+
         http
+
+            // Disable CSRF
             .csrf(csrf -> csrf.disable())
 
-            // 🔥 Disable default login page
-            .formLogin(form -> form.disable())
+            // =========================
+            // Authorization Rules
+            // =========================
 
             .authorizeHttpRequests(auth -> auth
-                // ✅ Public endpoints
+
+                // Public pages
                 .requestMatchers(
-                    "/",
-                    "/login",
-                    "/signup",
-                    "/auth/**",
-                    "/request",
-                    "/submitRequest",
-                    "/confirmRequest",
-                    "/viewFile/**",        // 🔥 ADD THIS
-                    "/downloadFile/**",    // 🔥 ADD THIS
-                    "/style.css",
-                    "/theme.js",
-                    "/error"
+                        "/",
+                        "/login",
+                        "/signup",
+                        "/auth/signup",
+                        "/style.css",
+                        "/theme.js",
+                        "/error"
                 ).permitAll()
 
-                // 🔒 Secure everything else
+                // Admin pages
+                .requestMatchers("/admin/**")
+                .hasRole("ADMIN")
+
+                // User pages
+                .requestMatchers("/user/**")
+                .hasAnyRole("USER", "ADMIN")
+
+                // Request pages
+                .requestMatchers(
+                        "/request",
+                        "/submitRequest",
+                        "/confirmRequest",
+                        "/viewFile/**",
+                        "/downloadFile/**"
+                ).hasAnyRole("USER", "ADMIN")
+
+                // Everything else
                 .anyRequest().authenticated()
             )
 
-            .exceptionHandling(ex -> ex
-                .authenticationEntryPoint((request, response, authException) -> {
-                    response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
-                })
+            // =========================
+            // Login Configuration
+            // =========================
+
+            .formLogin(form -> form
+
+                // Custom login page
+                .loginPage("/login")
+
+                // Login processing URL
+                .loginProcessingUrl("/perform_login")
+
+                .successHandler(customAuthenticationSuccessHandler)
+
+                // Failed login
+                .failureUrl("/login?error=true")
+
+                .permitAll()
             )
 
-            .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+            // =========================
+            // Logout Configuration
+            // =========================
+
+            .logout(logout -> logout
+
+                .logoutUrl("/logout")
+
+                .logoutSuccessUrl("/login?logout=true")
+
+                .permitAll()
+            );
 
         return http.build();
     }

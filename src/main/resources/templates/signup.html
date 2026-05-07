@@ -3,7 +3,7 @@
 <head>
     <title>Signup - Print App</title>
 
-    <!-- Font -->
+    <!-- Google Font -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
 
     <!-- CSS -->
@@ -11,6 +11,7 @@
 </head>
 <body>
 
+<!-- Dark Mode Toggle -->
 <button class="toggle-btn" onclick="toggleDarkMode()" id="toggle-icon">🌙</button>
 
 <div class="form-container">
@@ -29,38 +30,71 @@
         <input type="password" id="password" required>
 
         <button type="submit">Sign Up</button>
+
     </form>
 
+    <!-- Message -->
+    <p id="message" style="text-align:center; margin-top:10px;"></p>
+
     <div class="thank-you-note">
-        <p>Already have an account? <a href="/login">Sign In</a></p>
+        <p>Already have an account?
+            <a href="/login">Sign In</a>
+        </p>
     </div>
 
 </div>
 
 <script>
+
 document.getElementById("signupForm").addEventListener("submit", async function(e) {
+
     e.preventDefault();
 
+    const messageEl = document.getElementById("message");
+
+    // User object
     const user = {
-        username: username.value,
-        email: email.value,
-        password: password.value,
-        role: "USER"
+        username: document.getElementById("username").value,
+        email: document.getElementById("email").value,
+        password: document.getElementById("password").value
     };
 
-    const res = await fetch("/auth/signup", {
-        method: "POST",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify(user)
-    });
+    try {
 
-    if (res.ok) {
-        alert("Signup successful! Please login.");
-        window.location.href = "/login";
-    } else {
-        alert("Signup failed!");
+        const res = await fetch("/auth/signup", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(user)
+        });
+
+        const message = await res.text();
+
+        if (res.ok) {
+
+            messageEl.style.color = "green";
+            messageEl.innerText = message;
+
+            // Redirect to login
+            setTimeout(() => {
+                window.location.href = "/login";
+            }, 1500);
+
+        } else {
+
+            messageEl.style.color = "red";
+            messageEl.innerText = message || "Signup failed ❌";
+        }
+
+    } catch (error) {
+
+        messageEl.style.color = "red";
+        messageEl.innerText = "Something went wrong ❌";
     }
+
 });
+
 </script>
 
 <script src="/theme.js"></script>

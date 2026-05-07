@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>User Dashboard - Print App</title>
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="/style.css">
+
+    <style>
+        .dashboard-container {
+            width: 90%;
+            max-width: 600px;
+            margin: 80px auto;
+            text-align: center;
+        }
+
+        .dashboard-card {
+            padding: 30px;
+            border-radius: 16px;
+            background: rgba(255,255,255,0.08);
+            backdrop-filter: blur(12px);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+        }
+
+        .dashboard-card h1 {
+            margin-bottom: 10px;
+        }
+
+        .dashboard-card p {
+            margin-bottom: 30px;
+            opacity: 0.8;
+        }
+
+        .dashboard-btn {
+            display: block;
+            width: 100%;
+            margin: 15px 0;
+            padding: 14px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .logout-btn {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<button class="toggle-btn" onclick="toggleDarkMode()" id="toggle-icon">🌙</button>
+
+<div class="dashboard-container">
+
+    <div class="dashboard-card">
+
+        <h1>👤 User Dashboard</h1>
+
+        <p>Welcome to the Print Request Management System</p>
+
+        <!-- Create Request -->
+        <button class="dashboard-btn"
+                onclick="window.location.href='/request'">
+            ➕ Create New Print Request
+        </button>
+
+        <!-- My Requests -->
+        <button class="dashboard-btn">
+            📄 View My Requests
+        </button>
+
+        <!-- Logout -->
+        <button class="dashboard-btn logout-btn"
+                onclick="logout()">
+            🚪 Logout
+        </button>
+
+    </div>
+
+</div>
+
+<script>
+
+function logout() {
+
+    // Remove token and role
+    localStorage.removeItem("token");
+    localStorage.removeItem("role");
+
+    // Redirect to login
+    window.location.href = "/login";
+}
+
+</script>
+
+<script src="/theme.js"></script>
+
+</body>
+</html>

@@ -3,6 +3,7 @@ package com.example.printapp.model;
 import jakarta.persistence.*;
 
 @Entity
+@Table(name = "users")
 public class User {
 
     @Id
@@ -10,21 +11,30 @@ public class User {
     private Long id;
 
     private String username;
+
+    @Column(unique = true, nullable = false)
     private String email;
+
     private String password;
-    private String role; // USER or ADMIN
 
-    // Constructors
-    public User() {}
+    @Enumerated(EnumType.STRING)
+    private Role role;
 
-    public User(String username, String email, String password, String role) {
+    // Default Constructor
+    public User() {
+    }
+
+    // Parameterized Constructor
+    public User(String username, String email, String password, Role role) {
         this.username = username;
         this.email = email;
         this.password = password;
         this.role = role;
     }
 
-    // ✅ Getters and Setters
+    // =========================
+    // Getters and Setters
+    // =========================
 
     public Long getId() {
         return id;
@@ -54,11 +64,11 @@ public class User {
         this.password = password;
     }
 
-    public String getRole() {
+    public Role getRole() {
         return role;
     }
 
-    public void setRole(String role) {
+    public void setRole(Role role) {
         this.role = role;
     }
 }
