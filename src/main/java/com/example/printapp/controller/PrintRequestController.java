@@ -2,6 +2,13 @@ package com.example.printapp.controller;
 
 import com.example.printapp.model.PrintRequest;
 import com.example.printapp.repository.PrintRequestRepository;
+import com.example.printapp.model.RequestStatus;
+import com.example.printapp.model.User;
+import com.example.printapp.repository.UserRepository;
+import com.example.printapp.model.PaymentStatus;
+
+import java.security.Principal;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -27,18 +34,161 @@ public class PrintRequestController {
     @Autowired
     private PrintRequestRepository printRequestRepository;
 
+    @Autowired
+    private UserRepository userRepository;
+
     @ModelAttribute("printRequest")
     public PrintRequest getPrintRequest() {
         return new PrintRequest();
     }
 
-    @GetMapping("/request")
-    public String showRequestForm() {
-        return "request";
-    }
+    @GetMapping("/user/request")
+public String showRequestForm(Model model) {
+
+    // Create fresh request object
+    model.addAttribute("printRequest", new PrintRequest());
+
+    return "request";
+}
+
+    @GetMapping("/user/my-requests")
+public String myRequests(Model model,
+                         Principal principal) {
+
+    // Logged-in user email
+    String email = principal.getName();
+
+    // Find user
+    User user = userRepository.findByEmail(email)
+            .orElseThrow(() ->
+                    new RuntimeException("User not found"));
+
+    // Get user's requests
+    List<PrintRequest> requests =
+            printRequestRepository.findByUser(user);
+
+    // Send to UI
+    model.addAttribute("requests", requests);
+
+    return "my-requests";
+}
+
+    @GetMapping("/admin/all-requests")
+public String allRequests(Model model) {
+
+    // Get all requests
+    List<PrintRequest> requests =
+            printRequestRepository.findAll();
+
+    // Send to page
+    model.addAttribute("requests", requests);
+
+    return "admin-requests";
+}
+
+    @GetMapping("/admin/approve/{id}")
+public String approveRequest(@PathVariable Long id) {
+
+    PrintRequest request =
+            printRequestRepository.findById(id)
+            .orElseThrow(() ->
+                    new RuntimeException("Request not found"));
+
+    request.setStatus(RequestStatus.APPROVED);
+
+    printRequestRepository.save(request);
+
+    return "redirect:/admin/all-requests";
+}
+
+    @GetMapping("/admin/reject/{id}")
+public String rejectRequest(@PathVariable Long id) {
+
+    PrintRequest request =
+            printRequestRepository.findById(id)
+            .orElseThrow(() ->
+                    new RuntimeException("Request not found"));
+
+    request.setStatus(RequestStatus.REJECTED);
+
+    printRequestRepository.save(request);
+
+    return "redirect:/admin/all-requests";
+}
+
+    @GetMapping("/admin/complete/{id}")
+public String completeRequest(@PathVariable Long id) {
+
+    PrintRequest request =
+            printRequestRepository.findById(id)
+            .orElseThrow(() ->
+                    new RuntimeException("Request not found"));
+
+    request.setStatus(RequestStatus.COMPLETED);
+
+    printRequestRepository.save(request);
+
+    return "redirect:/admin/all-requests";
+}
+
+    @GetMapping("/admin/pending-requests")
+public String pendingRequests(Model model) {
+
+    List<PrintRequest> requests =
+            printRequestRepository.findByStatus(
+                    RequestStatus.PENDING
+            );
+
+    model.addAttribute("requests", requests);
+
+    return "pending-requests";
+}
+
+    @GetMapping("/admin/pay/{id}")
+public String markAsPaid(@PathVariable Long id) {
+
+    PrintRequest request =
+            printRequestRepository.findById(id)
+            .orElseThrow(() ->
+                    new RuntimeException("Request not found"));
+
+    request.setPaymentStatus(PaymentStatus.PAID);
+
+    printRequestRepository.save(request);
+
+    return "redirect:/admin/all-requests";
+}
+
+    @GetMapping("/admin/approved-requests")
+public String approvedRequests(Model model) {
+
+    List<PrintRequest> requests =
+            printRequestRepository.findByStatus(
+                    RequestStatus.APPROVED
+            );
+
+    model.addAttribute("requests", requests);
+
+    return "approved-requests";
+}
+
+    @GetMapping("/admin/payment-requests")
+public String paymentRequests(Model model) {
+
+    List<PrintRequest> requests =
+            printRequestRepository
+                    .findByStatusAndPaymentStatus(
+                            RequestStatus.COMPLETED,
+                            PaymentStatus.UNPAID
+                    );
+
+    model.addAttribute("requests", requests);
+
+    return "payment-requests";
+}
 
     // 🔹 STEP 1: SUBMIT → TEMP SAVE
-    @PostMapping("/submitRequest")
+    @PostMapping("/user/submitRequest")
     public String submitRequest(
             @ModelAttribute("printRequest") PrintRequest printRequest,
             @RequestParam("file") MultipartFile file,
@@ -109,43 +259,72 @@ public class PrintRequestController {
     }
 
     // 🔹 STEP 2: CONFIRM → FINAL SAVE
-    @PostMapping("/confirmRequest")
-    public String confirmRequest(@ModelAttribute("printRequest") PrintRequest printRequest,
-                                 Model model,
-                                 SessionStatus sessionStatus) {
+    @PostMapping("/user/confirmRequest")
+public String confirmRequest(
+        @ModelAttribute("printRequest") PrintRequest printRequest,
+        Model model,
+        SessionStatus sessionStatus,
+        Principal principal) {
 
-        try {
-            String finalDir = System.getProperty("user.dir") + "/uploads/";
-            File dir = new File(finalDir);
+    try {
 
-            if (!dir.exists()) {
-                dir.mkdirs();
-            }
+        String finalDir = System.getProperty("user.dir") + "/uploads/";
+        File dir = new File(finalDir);
 
-            File tempFile = new File(printRequest.getFilePath());
-
-            String finalPath = finalDir + printRequest.getFileName();
-            File finalFile = new File(finalPath);
-
-            // 🔥 Move file
-            tempFile.renameTo(finalFile);
-
-            printRequest.setFilePath(finalPath);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            model.addAttribute("error", "Error saving file.");
-            return "request";
+        if (!dir.exists()) {
+            dir.mkdirs();
         }
 
-        PrintRequest savedRequest = printRequestRepository.save(printRequest);
+        File tempFile = new File(printRequest.getFilePath());
 
-        model.addAttribute("printRequest", savedRequest);
+        String finalPath = finalDir + printRequest.getFileName();
+        File finalFile = new File(finalPath);
 
-        sessionStatus.setComplete();
+        // Move file
+        tempFile.renameTo(finalFile);
 
-        return "confirmation";
+        printRequest.setFilePath(finalPath);
+
+    } catch (Exception e) {
+
+        e.printStackTrace();
+
+        model.addAttribute("error", "Error saving file.");
+
+        return "request";
     }
+
+    // =========================
+    // Attach Logged-in User
+    // =========================
+
+    String email = principal.getName();
+
+    User user = userRepository.findByEmail(email)
+            .orElseThrow(() ->
+                    new RuntimeException("User not found"));
+
+    printRequest.setUser(user);
+
+    // =========================
+    // Default Status
+    // =========================
+
+    printRequest.setStatus(RequestStatus.PENDING);
+
+    printRequest.setPaymentStatus(PaymentStatus.UNPAID);
+
+    // Save request
+    PrintRequest savedRequest =
+            printRequestRepository.save(printRequest);
+
+    model.addAttribute("printRequest", savedRequest);
+
+    // Clear session
+    sessionStatus.setComplete();
+
+    return "confirmation";
+}
 
     // 🔹 VIEW FILE
     @GetMapping("/viewFile/{id}")
@@ -194,12 +373,20 @@ public class PrintRequestController {
     }
 
     private double calculateAmount(PrintRequest printRequest) {
-        if ("color".equalsIgnoreCase(printRequest.getColor())) {
-            return COLOR_RATE * printRequest.getPages();
-        } else {
-            return BW_RATE * printRequest.getPages();
-        }
+
+    if ("color".equalsIgnoreCase(printRequest.getColor())) {
+
+        return COLOR_RATE
+                * printRequest.getPages()
+                * printRequest.getCopies();
+
+    } else {
+
+        return BW_RATE
+                * printRequest.getPages()
+                * printRequest.getCopies();
     }
+}
 
     private boolean isValidPrintRequest(PrintRequest printRequest) {
         return printRequest.getName() != null && !printRequest.getName().isEmpty()

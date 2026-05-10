@@ -43,6 +43,11 @@
         </tr>
 
         <tr>
+            <td><strong>Copies:</strong></td>
+            <td th:text="${printRequest.copies}">1</td>
+        </tr>
+
+        <tr>
             <td><strong>Color:</strong></td>
             <td th:text="${printRequest.color}">bw</td>
         </tr>
@@ -62,17 +67,18 @@
     <div style="display:flex; justify-content:space-between; margin-top:30px;">
         
         <!-- Back -->
-        <form th:action="@{/request}" method="get">
+        <form th:action="@{/user/request}" method="get">
             <button type="submit">⬅ Back</button>
         </form>
 
         <!-- Proceed -->
-        <form th:action="@{/confirmRequest}" method="post">
+        <form th:action="@{/user/confirmRequest}" method="post">
 
             <!-- 🔥 IMPORTANT: pass all data -->
             <input type="hidden" name="name" th:value="${printRequest.name}" />
             <input type="hidden" name="documentName" th:value="${printRequest.documentName}" />
             <input type="hidden" name="pages" th:value="${printRequest.pages}" />
+            <input type="hidden" name="copies" th:value="${printRequest.copies}" />
             <input type="hidden" name="color" th:value="${printRequest.color}" />
             <input type="hidden" name="sided" th:value="${printRequest.sided}" />
             <input type="hidden" name="amount" th:value="${printRequest.amount}" />

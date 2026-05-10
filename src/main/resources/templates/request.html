@@ -8,16 +8,6 @@
 
     <!-- CSS -->
     <link rel="stylesheet" href="/style.css">
-
-    <!-- 🔐 Auth Check -->
-    <script>
-        const token = localStorage.getItem("token");
-
-        if (!token) {
-            alert("Please login first!");
-            window.location.href = "/login";
-        }
-    </script>
 </head>
 <body>
 
@@ -34,7 +24,7 @@
     <!-- 🔥 ERROR MESSAGE DISPLAY -->
     <p style="color: red; font-weight: 600;" th:if="${error}" th:text="${error}"></p>
     
-    <form th:action="@{/submitRequest}" method="post" 
+    <form th:action="@{/user/submitRequest}" method="post" 
           th:object="${printRequest}" enctype="multipart/form-data">
         
         <label for="name">Name</label>
@@ -58,6 +48,15 @@
 
         <label for="pages">Number of Pages</label>
         <input type="number" id="pages" th:field="*{pages}" min="1" placeholder="Enter number of pages" required />
+
+        <label for="copies">Number of Copies</label>
+
+        <input type="number"
+                id="copies"
+                th:field="*{copies}"
+                min="1"
+                value="1"
+                required />
 
         <label for="color">Color</label>
         <select id="color" th:field="*{color}">

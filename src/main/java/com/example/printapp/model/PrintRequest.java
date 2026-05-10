@@ -1,34 +1,84 @@
 package com.example.printapp.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 @Entity
 public class PrintRequest {
 
+    // =========================
+    // Primary Key
+    // =========================
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Long userId;
+
+    // =========================
+    // User Relationship
+    // =========================
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    // =========================
+    // Request Details
+    // =========================
+
     private String name;
+
     private String documentName;
+
     private int pages;
+
+    private int copies = 1;
+
     private String color;
+
     private String sided;
+
     private double amount;
-    private boolean paid;
+
+    // =========================
+    // Workflow Status
+    // =========================
+
+    @Enumerated(EnumType.STRING)
+    private RequestStatus status;
+
+    // =========================
+    // Payment Status
+    // =========================
+
+    @Enumerated(EnumType.STRING)
+    private PaymentStatus paymentStatus;
+
+    // =========================
+    // File Details
+    // =========================
+
     private String fileName;
+
     private String filePath;
 
+    // =========================
     // Getters and Setters
+    // =========================
+
     public Long getId() {
         return id;
     }
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public String getName() {
@@ -55,6 +105,14 @@ public class PrintRequest {
         this.pages = pages;
     }
 
+    public int getCopies() {
+        return copies;
+    }
+
+    public void setCopies(int copies) {
+        this.copies = copies;
+    }
+
     public String getColor() {
         return color;
     }
@@ -79,12 +137,20 @@ public class PrintRequest {
         this.amount = amount;
     }
 
-    public boolean isPaid() {
-        return paid;
+    public RequestStatus getStatus() {
+        return status;
     }
 
-    public void setPaid(boolean paid) {
-        this.paid = paid;
+    public void setStatus(RequestStatus status) {
+        this.status = status;
+    }
+
+    public PaymentStatus getPaymentStatus() {
+        return paymentStatus;
+    }
+
+    public void setPaymentStatus(PaymentStatus paymentStatus) {
+        this.paymentStatus = paymentStatus;
     }
 
     public String getFileName() {

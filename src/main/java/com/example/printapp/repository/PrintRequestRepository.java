@@ -1,10 +1,26 @@
 package com.example.printapp.repository;
 
 import com.example.printapp.model.PrintRequest;
+import com.example.printapp.model.User;
+import com.example.printapp.model.RequestStatus;
+import com.example.printapp.model.PaymentStatus;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
-public interface PrintRequestRepository extends JpaRepository<PrintRequest, Long> {
-    // You can define custom query methods if needed, but basic CRUD operations are handled by JpaRepository
+public interface PrintRequestRepository
+        extends JpaRepository<PrintRequest, Long> {
+
+    // Get all requests of a user
+    List<PrintRequest> findByUser(User user);
+
+    List<PrintRequest> findByStatus(RequestStatus status);
+
+    List<PrintRequest> findByStatusAndPaymentStatus(
+            RequestStatus status,
+            PaymentStatus paymentStatus
+    );
 }

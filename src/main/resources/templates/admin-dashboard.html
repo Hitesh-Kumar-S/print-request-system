@@ -4,12 +4,14 @@
     <title>Admin Dashboard - Print App</title>
 
     <!-- Google Font -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap"
+          rel="stylesheet">
 
     <!-- CSS -->
     <link rel="stylesheet" href="/style.css">
 
     <style>
+
         .dashboard-container {
             width: 90%;
             max-width: 700px;
@@ -48,11 +50,14 @@
         .logout-btn {
             margin-top: 20px;
         }
+
     </style>
 </head>
 <body>
 
-<button class="toggle-btn" onclick="toggleDarkMode()" id="toggle-icon">🌙</button>
+<button class="toggle-btn"
+        onclick="toggleDarkMode()"
+        id="toggle-icon">🌙</button>
 
 <div class="dashboard-container">
 
@@ -62,44 +67,46 @@
 
         <p>Manage and monitor all print requests</p>
 
-        <!-- View Requests -->
-        <button class="dashboard-btn">
+        <!-- View All Requests -->
+        <button class="dashboard-btn"
+                onclick="window.location.href='/admin/all-requests'">
+
             📋 View All Requests
         </button>
 
         <!-- Pending Requests -->
-        <button class="dashboard-btn">
-            ⏳ Pending Requests
-        </button>
+        <button class="dashboard-btn"
+        onclick="window.location.href='/admin/pending-requests'">
 
-        <!-- Download Files -->
-        <button class="dashboard-btn">
-            📥 Download Uploaded Files
-        </button>
+    ⏳ Pending Requests
+</button>
+
+        <button class="dashboard-btn"
+        onclick="window.location.href='/admin/approved-requests'">
+
+    ✅ Approved Requests
+</button>
+
+        <button class="dashboard-btn"
+        onclick="window.location.href='/admin/payment-requests'">
+
+    💰 Payment Requests
+</button>
 
         <!-- Logout -->
-        <button class="dashboard-btn logout-btn"
-                onclick="logout()">
-            🚪 Logout
-        </button>
+        <form th:action="@{/logout}" method="post">
+
+            <button type="submit"
+                    class="dashboard-btn logout-btn">
+
+                🚪 Logout
+            </button>
+
+        </form>
 
     </div>
 
 </div>
-
-<script>
-
-function logout() {
-
-    // Remove token and role
-    localStorage.removeItem("token");
-    localStorage.removeItem("role");
-
-    // Redirect to login
-    window.location.href = "/login";
-}
-
-</script>
 
 <script src="/theme.js"></script>
 

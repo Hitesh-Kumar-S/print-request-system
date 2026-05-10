@@ -53,10 +53,41 @@
         <p id="current-time"></p>
     </div>
 
-    <!-- 🔁 Action Button -->
-    <form th:action="@{/request}" method="get">
-        <button type="submit">Make Another Request</button>
+    <!-- 🔁 Action Buttons -->
+<div style="display:flex;
+            justify-content:center;
+            gap:15px;
+            margin-top:30px;
+            flex-wrap:wrap;">
+
+    <!-- Make Another Request -->
+    <form th:action="@{/user/request}" method="get">
+
+        <button type="submit">
+            ➕ Make Another Request
+        </button>
+
     </form>
+
+    <!-- Back to Dashboard -->
+    <form th:action="@{/user/dashboard}" method="get">
+
+        <button type="submit">
+            🏠 Dashboard
+        </button>
+
+    </form>
+
+    <!-- Logout -->
+    <form th:action="@{/logout}" method="post">
+
+        <button type="submit">
+            🚪 Logout
+        </button>
+
+    </form>
+
+</div>
 
     <div class="thank-you-note">
         <p>We appreciate your trust 🙌</p>

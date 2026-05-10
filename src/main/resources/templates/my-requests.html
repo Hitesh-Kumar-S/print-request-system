@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>My Requests</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap"
+          rel="stylesheet">
+
+    <link rel="stylesheet" href="/style.css">
+
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            padding: 14px;
+            border-bottom: 1px solid #ccc;
+            text-align: center;
+        }
+
+        th {
+            font-weight: 600;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1000px;
+            margin: 50px auto;
+        }
+
+        .status {
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+
+<button class="toggle-btn"
+        onclick="toggleDarkMode()"
+        id="toggle-icon">🌙</button>
+
+<div class="container">
+
+    <h2>📄 My Print Requests</h2>
+
+    <table>
+
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Document</th>
+            <th>Pages</th>
+            <th>Copies</th>
+            <th>Color</th>
+            <th>Amount</th>
+            <th>Status</th>
+            <th>Payment</th>
+            <th>View</th>
+            <th>Download</th>
+        </tr>
+        </thead>
+
+        <tbody>
+
+        <tr th:each="request : ${requests}">
+
+            <td th:text="${request.id}"></td>
+
+            <td th:text="${request.documentName}"></td>
+
+            <td th:text="${request.pages}"></td>
+
+            <td th:text="${request.copies}"></td>
+
+            <td th:text="${request.color}"></td>
+
+            <td th:text="${request.amount}"></td>
+
+            <td class="status"
+                th:text="${request.status}">
+            </td>
+
+            <td th:text="${request.paymentStatus}"></td>
+
+            <td>
+                <a th:href="@{'/viewFile/' + ${request.id}}"
+                   target="_blank">
+                    📄 View
+                </a>
+            </td>
+
+            <td>
+                <a th:href="@{'/downloadFile/' + ${request.id}}">
+                    ⬇ Download
+                </a>
+            </td>
+
+        </tr>
+
+        </tbody>
+
+    </table>
+
+    <br>
+
+    <a th:href="@{/user/dashboard}">
+        ⬅ Back to Dashboard
+    </a>
+
+</div>
+
+<script src="/theme.js"></script>
+
+</body>
+</html>
