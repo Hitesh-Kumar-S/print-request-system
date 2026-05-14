@@ -6,6 +6,7 @@ import com.example.printapp.model.RequestStatus;
 import com.example.printapp.model.User;
 import com.example.printapp.repository.UserRepository;
 import com.example.printapp.model.PaymentStatus;
+import com.example.printapp.service.EmailService;
 
 import java.security.Principal;
 import java.util.List;
@@ -25,7 +26,6 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.ResponseEntity;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -45,6 +45,9 @@ public class PrintRequestController {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private EmailService emailService;
 
     @ModelAttribute("printRequest")
     public PrintRequest getPrintRequest() {
@@ -471,6 +474,35 @@ public String confirmRequest(
     // Save request
     PrintRequest savedRequest =
             printRequestRepository.save(printRequest);
+
+    // =========================
+    // SEND EMAIL TO ADMIN
+    // =========================
+
+    try {
+
+        emailService.sendPrintRequestEmail(
+
+                "printapp.service@gmail.com",
+
+                savedRequest.getUser().getEmail(),
+
+                savedRequest.getDocumentName(),
+
+                savedRequest.getPages(),
+
+                savedRequest.getCopies(),
+
+                savedRequest.getAmount(),
+
+                savedRequest.getFilePath()
+
+        );
+
+    } catch (Exception e) {
+
+        e.printStackTrace();
+    }
 
     model.addAttribute("printRequest", savedRequest);
 
