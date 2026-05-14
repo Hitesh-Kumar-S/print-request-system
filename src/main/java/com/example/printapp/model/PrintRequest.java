@@ -1,5 +1,10 @@
 package com.example.printapp.model;
 
+import java.time.LocalDateTime;
+
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import jakarta.persistence.*;
 
 @Entity
@@ -25,13 +30,21 @@ public class PrintRequest {
     // Request Details
     // =========================
 
-    private String name;
+    @NotBlank(message = "Name is required")
+@Size(min = 2, max = 100,
+       message = "Name must be between 2 and 100 characters")
+private String name;
 
+    @NotBlank(message = "Document name is required")
     private String documentName;
 
+    @Min(value = 1,
+     message = "Pages must be at least 1")
     private int pages;
 
-    private int copies = 1;
+    @Min(value = 1,
+     message = "Copies must be at least 1")
+private int copies = 1;
 
     private String color;
 
@@ -54,12 +67,36 @@ public class PrintRequest {
     private PaymentStatus paymentStatus;
 
     // =========================
+// Audit Timestamps
+// =========================
+
+private LocalDateTime createdAt;
+
+private LocalDateTime updatedAt;
+
+private LocalDateTime completedAt;
+
+    // =========================
     // File Details
     // =========================
 
     private String fileName;
 
     private String filePath;
+
+    @PrePersist
+public void prePersist() {
+
+    createdAt = LocalDateTime.now();
+
+    updatedAt = LocalDateTime.now();
+}
+
+    @PreUpdate
+public void preUpdate() {
+
+    updatedAt = LocalDateTime.now();
+}
 
     // =========================
     // Getters and Setters
@@ -168,4 +205,28 @@ public class PrintRequest {
     public void setFilePath(String filePath) {
         this.filePath = filePath;
     }
+
+    public LocalDateTime getCreatedAt() {
+    return createdAt;
+}
+
+public void setCreatedAt(LocalDateTime createdAt) {
+    this.createdAt = createdAt;
+}
+
+public LocalDateTime getUpdatedAt() {
+    return updatedAt;
+}
+
+public void setUpdatedAt(LocalDateTime updatedAt) {
+    this.updatedAt = updatedAt;
+}
+
+public LocalDateTime getCompletedAt() {
+    return completedAt;
+}
+
+public void setCompletedAt(LocalDateTime completedAt) {
+    this.completedAt = completedAt;
+}
 }

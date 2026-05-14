@@ -10,6 +10,11 @@ import com.example.printapp.model.PaymentStatus;
 import java.security.Principal;
 import java.util.List;
 
+import java.time.LocalDateTime;
+
+import jakarta.validation.Valid;
+import org.springframework.validation.BindingResult;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,6 +25,10 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.ResponseEntity;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.io.File;
 import java.io.IOException;
@@ -74,13 +83,144 @@ public String myRequests(Model model,
 }
 
     @GetMapping("/admin/all-requests")
-public String allRequests(Model model) {
+public String allRequests(
 
-    // Get all requests
+        @RequestParam(defaultValue = "0")
+        int page,
+
+        Model model) {
+
+    Pageable pageable =
+            PageRequest.of(page, 10);
+
+    Page<PrintRequest> requestPage =
+            printRequestRepository.findAll(pageable);
+
+    model.addAttribute(
+            "requests",
+            requestPage.getContent());
+
+    model.addAttribute(
+            "currentPage",
+            page);
+
+    model.addAttribute(
+            "totalPages",
+            requestPage.getTotalPages());
+
+    return "admin-requests";
+}
+
+    @GetMapping("/admin/search")
+public String searchRequests(
+
+        @RequestParam(required = false)
+        String keyword,
+
+        Model model) {
+
+    // Empty search
+    if (keyword == null || keyword.isBlank()) {
+
+        Pageable pageable = PageRequest.of(0, 10);
+
+        Page<PrintRequest> requestPage =
+                printRequestRepository.findAll(pageable);
+
+        model.addAttribute(
+                "requests",
+                requestPage.getContent());
+
+        model.addAttribute(
+                "currentPage",
+                0);
+
+        model.addAttribute(
+                "totalPages",
+                requestPage.getTotalPages());
+
+        model.addAttribute(
+                "filterError",
+                "Please enter an email to search.");
+
+        return "admin-requests";
+    }
+
     List<PrintRequest> requests =
-            printRequestRepository.findAll();
+            printRequestRepository
+                    .findByUser_EmailContainingIgnoreCase(keyword);
 
-    // Send to page
+    model.addAttribute("requests", requests);
+
+    return "admin-requests";
+}
+
+    @GetMapping("/admin/filter")
+public String filterRequests(
+
+        @RequestParam(required = false)
+        String status,
+
+        Model model) {
+
+    // No status selected
+    if (status == null || status.isBlank()) {
+
+        model.addAttribute(
+                "filterError",
+                "Please select a status filter.");
+
+        List<PrintRequest> requests =
+                printRequestRepository.findAll();
+
+        model.addAttribute("requests", requests);
+
+        return "admin-requests";
+    }
+
+    RequestStatus requestStatus =
+            RequestStatus.valueOf(status);
+
+    List<PrintRequest> requests =
+            printRequestRepository
+                    .findByStatus(requestStatus);
+
+    model.addAttribute("requests", requests);
+
+    return "admin-requests";
+}
+
+    @GetMapping("/admin/payment-filter")
+public String filterByPayment(
+
+        @RequestParam(required = false)
+        String paymentStatus,
+
+        Model model) {
+
+    // No payment selected
+    if (paymentStatus == null ||
+        paymentStatus.isBlank()) {
+
+        model.addAttribute(
+                "filterError",
+                "Please select a payment filter.");
+
+        List<PrintRequest> requests =
+                printRequestRepository.findAll();
+
+        model.addAttribute("requests", requests);
+
+        return "admin-requests";
+    }
+
+    PaymentStatus status =
+            PaymentStatus.valueOf(paymentStatus);
+
+    List<PrintRequest> requests =
+            printRequestRepository
+                    .findByPaymentStatus(status);
+
     model.addAttribute("requests", requests);
 
     return "admin-requests";
@@ -98,7 +238,7 @@ public String approveRequest(@PathVariable Long id) {
 
     printRequestRepository.save(request);
 
-    return "redirect:/admin/all-requests";
+    return "redirect:/admin/pending-requests";
 }
 
     @GetMapping("/admin/reject/{id}")
@@ -113,7 +253,7 @@ public String rejectRequest(@PathVariable Long id) {
 
     printRequestRepository.save(request);
 
-    return "redirect:/admin/all-requests";
+    return "redirect:/admin/pending-requests";
 }
 
     @GetMapping("/admin/complete/{id}")
@@ -125,10 +265,11 @@ public String completeRequest(@PathVariable Long id) {
                     new RuntimeException("Request not found"));
 
     request.setStatus(RequestStatus.COMPLETED);
+    request.setCompletedAt(LocalDateTime.now());
 
     printRequestRepository.save(request);
 
-    return "redirect:/admin/all-requests";
+    return "redirect:/admin/approved-requests";
 }
 
     @GetMapping("/admin/pending-requests")
@@ -156,7 +297,7 @@ public String markAsPaid(@PathVariable Long id) {
 
     printRequestRepository.save(request);
 
-    return "redirect:/admin/all-requests";
+    return "redirect:/admin/payment-requests";
 }
 
     @GetMapping("/admin/approved-requests")
@@ -190,9 +331,22 @@ public String paymentRequests(Model model) {
     // 🔹 STEP 1: SUBMIT → TEMP SAVE
     @PostMapping("/user/submitRequest")
     public String submitRequest(
-            @ModelAttribute("printRequest") PrintRequest printRequest,
+            @Valid @ModelAttribute("printRequest") PrintRequest printRequest,
+            BindingResult bindingResult,
             @RequestParam("file") MultipartFile file,
             Model model) {
+
+        if (bindingResult.hasErrors()) {
+
+    model.addAttribute(
+            "error",
+            bindingResult.getAllErrors()
+                    .get(0)
+                    .getDefaultMessage()
+    );
+
+    return "request";
+}
 
         // ❌ Empty check
         if (file.isEmpty()) {

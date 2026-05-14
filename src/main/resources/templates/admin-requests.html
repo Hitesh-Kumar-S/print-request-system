@@ -58,6 +58,130 @@
 
     <h2>🛠️ All Print Requests</h2>
 
+    <p th:if="${filterError}"
+   th:text="${filterError}"
+
+   style="
+        color:#ff4d4d;
+        font-weight:600;
+        margin-top:10px;">
+</p>
+
+    <!-- SEARCH + VIEW ALL -->
+    <div style="margin: 20px 0;">
+
+        <form th:action="@{/admin/search}"
+              method="get"
+              style="display:flex;
+                     gap:10px;
+                     align-items:center;
+                     flex-wrap:wrap;">
+
+            <input type="text"
+                   name="keyword"
+                   placeholder="Search by user email"
+                   style="padding:10px;
+                          width:250px;
+                          border-radius:8px;
+                          border:1px solid #ccc;">
+
+            <button type="submit">
+                🔍 Search
+            </button>
+
+            <!-- View All Requests -->
+            <a th:href="@{/admin/all-requests}"
+               style="
+                    text-decoration:none;
+                    font-weight:600;
+                    padding:10px 14px;
+                    border-radius:8px;
+                    border:1px solid #ccc;">
+
+                📋 View All Requests
+            </a>
+
+        </form>
+
+    </div>
+
+    <!-- FILTER SECTION -->
+    <div style="
+            display:flex;
+            gap:15px;
+            flex-wrap:wrap;
+            margin-bottom:20px;">
+
+        <!-- STATUS FILTER -->
+        <form th:action="@{/admin/filter}"
+              method="get">
+
+            <select name="status"
+                    style="
+                        padding:10px;
+                        border-radius:8px;
+                        border:1px solid #ccc;">
+
+                <option value="">
+                    -- Filter By Status --
+                </option>
+
+                <option value="PENDING">
+                    PENDING
+                </option>
+
+                <option value="APPROVED">
+                    APPROVED
+                </option>
+
+                <option value="COMPLETED">
+                    COMPLETED
+                </option>
+
+                <option value="REJECTED">
+                    REJECTED
+                </option>
+
+            </select>
+
+            <button type="submit">
+                🎯 Filter
+            </button>
+
+        </form>
+
+        <!-- PAYMENT FILTER -->
+        <form th:action="@{/admin/payment-filter}"
+              method="get">
+
+            <select name="paymentStatus"
+                    style="
+                        padding:10px;
+                        border-radius:8px;
+                        border:1px solid #ccc;">
+
+                <option value="">
+                    -- Filter By Payment --
+                </option>
+
+                <option value="PAID">
+                    PAID
+                </option>
+
+                <option value="UNPAID">
+                    UNPAID
+                </option>
+
+            </select>
+
+            <button type="submit">
+                💰 Filter Payment
+            </button>
+
+        </form>
+
+    </div>
+
     <table>
 
         <thead>
@@ -70,6 +194,7 @@
             <th>Pages</th>
             <th>Copies</th>
             <th>Amount</th>
+            <th>Created At</th>
             <th>Status</th>
             <th>Payment</th>
             <th>View</th>
@@ -94,6 +219,11 @@
 
             <td th:text="${request.amount}"></td>
 
+            <td th:text="${#temporals.format(
+                    request.createdAt,
+                    'dd MMM yyyy, hh:mm a')}">
+            </td>
+
             <td class="status"
                 th:text="${request.status}">
             </td>
@@ -115,6 +245,67 @@
         </tbody>
 
     </table>
+
+    <!-- PAGINATION -->
+
+    <!-- PAGINATION -->
+<div th:if="${currentPage != null and totalPages != null}"
+
+     style="
+            margin-top:30px;
+            display:flex;
+            gap:10px;
+            justify-content:center;
+            align-items:center;
+            flex-wrap:wrap;">
+
+        <!-- Previous -->
+        <a th:if="${currentPage > 0}"
+           th:href="@{/admin/all-requests(page=${currentPage - 1})}"
+           style="
+                padding:10px 14px;
+                border:1px solid #ccc;
+                border-radius:8px;
+                text-decoration:none;">
+
+            ⬅ Previous
+        </a>
+
+        <!-- Page Numbers -->
+        <span th:each="i : ${#numbers.sequence(0, totalPages - 1)}">
+
+            <a th:href="@{/admin/all-requests(page=${i})}"
+
+               th:text="${i + 1}"
+
+               th:style="${i == currentPage}
+               ? 'padding:10px 14px;
+                  background:#4B7BE5;
+                  color:white;
+                  border-radius:8px;
+                  text-decoration:none;'
+
+               : 'padding:10px 14px;
+                  border:1px solid #ccc;
+                  border-radius:8px;
+                  text-decoration:none;'">
+            </a>
+
+        </span>
+
+        <!-- Next -->
+        <a th:if="${currentPage < totalPages - 1}"
+           th:href="@{/admin/all-requests(page=${currentPage + 1})}"
+           style="
+                padding:10px 14px;
+                border:1px solid #ccc;
+                border-radius:8px;
+                text-decoration:none;">
+
+            Next ➡
+        </a>
+
+    </div>
 
     <br>
 

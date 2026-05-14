@@ -1,36 +1,97 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
+
     <meta charset="UTF-8">
+
     <title>Error - Print App</title>
 
     <!-- Google Font -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap"
+          rel="stylesheet">
 
     <!-- Common CSS -->
     <link rel="stylesheet" href="/style.css">
+
+    <style>
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 25px;
+        }
+
+        .button-group a,
+        .button-group button {
+
+            text-decoration: none;
+            padding: 12px 18px;
+            border-radius: 10px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            transition: 0.3s;
+        }
+
+        .button-group a:hover,
+        .button-group button:hover {
+
+            transform: scale(1.03);
+        }
+
+    </style>
+
 </head>
 <body>
 
 <!-- 🌙 Dark Mode Toggle -->
-<button class="toggle-btn" onclick="toggleDarkMode()" id="toggle-icon">🌙</button>
+<button class="toggle-btn"
+        onclick="toggleDarkMode()"
+        id="toggle-icon">🌙</button>
 
 <div class="form-container">
 
-    <h2 style="color:#e53935;">⚠️ Error Occurred</h2>
+    <h2 style="color:#e53935;">
+        ⚠️ Error Occurred
+    </h2>
 
     <div class="welcome-message">
+
         <p th:text="${error}">
             Something went wrong. Please try again later.
         </p>
+
     </div>
 
-    <form action="/request" method="get">
-        <button type="submit">⬅ Go Back</button>
-    </form>
+    <!-- ACTION BUTTONS -->
+    <div class="button-group">
 
-    <div class="thank-you-note">
-        <p>If the issue persists, contact admin</p>
+        <!-- Go Back -->
+        <button onclick="history.back()">
+            ⬅ Go Back
+        </button>
+
+        <!-- Home -->
+        <a href="/">
+            🏠 Home
+        </a>
+
+        <!-- Login -->
+        <a href="/login">
+            🔐 Login Again
+        </a>
+
+    </div>
+
+    <div class="thank-you-note"
+         style="margin-top:25px;">
+
+        <p>
+            If the issue persists, contact admin.
+        </p>
+
     </div>
 
 </div>

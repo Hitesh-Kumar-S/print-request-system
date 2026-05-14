@@ -1,5 +1,8 @@
 package com.example.printapp.controller;
 
+import jakarta.validation.Valid;
+import org.springframework.validation.BindingResult;
+
 import com.example.printapp.model.Role;
 import com.example.printapp.model.User;
 import com.example.printapp.repository.UserRepository;
@@ -22,7 +25,16 @@ public class AuthController {
     // =========================
 
     @PostMapping("/signup")
-    public String signup(@RequestBody User user) {
+    public String signup(@Valid @RequestBody User user, 
+                        BindingResult bindingResult) {
+
+        if (bindingResult.hasErrors()) {
+
+    return bindingResult
+            .getAllErrors()
+            .get(0)
+            .getDefaultMessage();
+}
 
         // Check existing email
         if (userRepository.findByEmail(user.getEmail()).isPresent()) {

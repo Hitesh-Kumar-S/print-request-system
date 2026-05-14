@@ -23,4 +23,12 @@ public interface PrintRequestRepository
             RequestStatus status,
             PaymentStatus paymentStatus
     );
+
+    List<PrintRequest> findByUser_EmailContainingIgnoreCase(
+            String email
+    );
+
+    List<PrintRequest> findByPaymentStatus(
+        PaymentStatus paymentStatus
+);
 }
