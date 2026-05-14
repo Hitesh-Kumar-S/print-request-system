@@ -67,7 +67,6 @@
             <th>Copies</th>
             <th>Amount</th>
             <th>Payment</th>
-            <th>View</th>
             <th>Actions</th>
 
         </tr>
@@ -91,16 +90,6 @@
             <td th:text="${request.amount}"></td>
 
             <td th:text="${request.paymentStatus}"></td>
-
-            <td>
-
-                <a th:href="@{'/viewFile/' + ${request.id}}"
-                   target="_blank">
-
-                    📄 View
-                </a>
-
-            </td>
 
             <td>
 

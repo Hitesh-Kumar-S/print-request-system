@@ -197,7 +197,6 @@
             <th>Created At</th>
             <th>Status</th>
             <th>Payment</th>
-            <th>View</th>
 
         </tr>
 
@@ -229,16 +228,6 @@
             </td>
 
             <td th:text="${request.paymentStatus}"></td>
-
-            <td>
-
-                <a th:href="@{'/viewFile/' + ${request.id}}"
-                   target="_blank">
-
-                    📄 View
-                </a>
-
-            </td>
 
         </tr>
 

@@ -590,52 +590,6 @@ public String confirmRequest(
     return "confirmation";
 }
 
-    // 🔹 VIEW FILE
-    @GetMapping("/viewFile/{id}")
-    public ResponseEntity<Resource> viewFile(@PathVariable Long id) {
-
-        PrintRequest request = printRequestRepository.findById(id).orElse(null);
-
-        if (request == null || request.getFilePath() == null) {
-            return ResponseEntity.notFound().build();
-        }
-
-        File file = new File(request.getFilePath());
-
-        if (!file.exists()) {
-            return ResponseEntity.notFound().build();
-        }
-
-        Resource resource = new FileSystemResource(file);
-
-        return ResponseEntity.ok()
-                .header("Content-Type", "application/pdf")
-                .body(resource);
-    }
-
-    // 🔹 DOWNLOAD FILE
-    @GetMapping("/downloadFile/{id}")
-    public ResponseEntity<Resource> downloadFile(@PathVariable Long id) {
-
-        PrintRequest request = printRequestRepository.findById(id).orElse(null);
-
-        if (request == null || request.getFilePath() == null) {
-            return ResponseEntity.notFound().build();
-        }
-
-        File file = new File(request.getFilePath());
-
-        if (!file.exists()) {
-            return ResponseEntity.notFound().build();
-        }
-
-        Resource resource = new FileSystemResource(file);
-
-        return ResponseEntity.ok()
-                .header("Content-Disposition", "attachment; filename=\"" + request.getFileName() + "\"")
-                .body(resource);
-    }
-
     private double calculateAmount(PrintRequest printRequest) {
 
     if ("color".equalsIgnoreCase(printRequest.getColor())) {

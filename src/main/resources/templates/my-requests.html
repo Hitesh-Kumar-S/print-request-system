@@ -59,8 +59,6 @@
             <th>Created At</th>
             <th>Status</th>
             <th>Payment</th>
-            <th>View</th>
-            <th>Download</th>
         </tr>
         </thead>
 
@@ -90,19 +88,6 @@
             </td>
 
             <td th:text="${request.paymentStatus}"></td>
-
-            <td>
-                <a th:href="@{'/viewFile/' + ${request.id}}"
-                   target="_blank">
-                    📄 View
-                </a>
-            </td>
-
-            <td>
-                <a th:href="@{'/downloadFile/' + ${request.id}}">
-                    ⬇ Download
-                </a>
-            </td>
 
         </tr>
 
