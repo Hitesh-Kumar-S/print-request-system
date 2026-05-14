@@ -75,4 +75,147 @@ public class EmailService {
         // SEND MAIL
         mailSender.send(message);
     }
+
+    // =========================
+// APPROVAL NOTIFICATION
+// =========================
+
+public void sendApprovalEmail(
+
+        String toEmail,
+        String documentName
+
+) throws MessagingException {
+
+    MimeMessage message =
+            mailSender.createMimeMessage();
+
+    MimeMessageHelper helper =
+            new MimeMessageHelper(message, true);
+
+    helper.setTo(toEmail);
+
+    helper.setSubject(
+            "Print Request Approved");
+
+    helper.setText(
+
+            "Your print request has been approved.\n\n"
+
+            + "Document: " + documentName + "\n\n"
+
+            + "You will be notified once printing is completed."
+
+    );
+
+    mailSender.send(message);
+}
+
+        // =========================
+// REJECTION NOTIFICATION
+// =========================
+
+public void sendRejectionEmail(
+
+        String toEmail,
+        String documentName
+
+) throws MessagingException {
+
+    MimeMessage message =
+            mailSender.createMimeMessage();
+
+    MimeMessageHelper helper =
+            new MimeMessageHelper(message, true);
+
+    helper.setTo(toEmail);
+
+    helper.setSubject(
+            "Print Request Rejected");
+
+    helper.setText(
+
+            "Your print request has been rejected.\n\n"
+
+            + "Document: " + documentName + "\n\n"
+
+            + "Please contact admin for more details."
+
+    );
+
+    mailSender.send(message);
+}
+
+        // =========================
+// COMPLETION NOTIFICATION
+// =========================
+
+public void sendCompletionEmail(
+
+        String toEmail,
+        String documentName
+
+) throws MessagingException {
+
+    MimeMessage message =
+            mailSender.createMimeMessage();
+
+    MimeMessageHelper helper =
+            new MimeMessageHelper(message, true);
+
+    helper.setTo(toEmail);
+
+    helper.setSubject(
+            "Print Request Completed");
+
+    helper.setText(
+
+            "Your print request has been completed.\n\n"
+
+            + "Document: " + documentName + "\n\n"
+
+            + "You can now collect your printed document."
+
+    );
+
+    mailSender.send(message);
+}
+
+// =========================
+// PAYMENT NOTIFICATION
+// =========================
+
+public void sendPaymentEmail(
+
+        String toEmail,
+        String documentName,
+        double amount
+
+) throws MessagingException {
+
+    MimeMessage message =
+            mailSender.createMimeMessage();
+
+    MimeMessageHelper helper =
+            new MimeMessageHelper(message, true);
+
+    helper.setTo(toEmail);
+
+    helper.setSubject(
+            "Payment Confirmed");
+
+    helper.setText(
+
+            "Your payment has been confirmed.\n\n"
+
+            + "Document: " + documentName + "\n"
+
+            + "Amount Paid: ₹" + amount + "\n\n"
+
+            + "Thank you for using PrintApp."
+
+    );
+
+    mailSender.send(message);
+}
 }

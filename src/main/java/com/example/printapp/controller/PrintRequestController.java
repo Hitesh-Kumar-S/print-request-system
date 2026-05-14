@@ -241,6 +241,25 @@ public String approveRequest(@PathVariable Long id) {
 
     printRequestRepository.save(request);
 
+    // =========================
+// SEND APPROVAL EMAIL
+// =========================
+
+try {
+
+    emailService.sendApprovalEmail(
+
+            request.getUser().getEmail(),
+
+            request.getDocumentName()
+
+    );
+
+} catch (Exception e) {
+
+    e.printStackTrace();
+}
+
     return "redirect:/admin/pending-requests";
 }
 
@@ -255,6 +274,25 @@ public String rejectRequest(@PathVariable Long id) {
     request.setStatus(RequestStatus.REJECTED);
 
     printRequestRepository.save(request);
+
+    // =========================
+// SEND REJECTION EMAIL
+// =========================
+
+try {
+
+    emailService.sendRejectionEmail(
+
+            request.getUser().getEmail(),
+
+            request.getDocumentName()
+
+    );
+
+} catch (Exception e) {
+
+    e.printStackTrace();
+}
 
     return "redirect:/admin/pending-requests";
 }
@@ -271,6 +309,25 @@ public String completeRequest(@PathVariable Long id) {
     request.setCompletedAt(LocalDateTime.now());
 
     printRequestRepository.save(request);
+
+    // =========================
+// SEND COMPLETION EMAIL
+// =========================
+
+try {
+
+    emailService.sendCompletionEmail(
+
+            request.getUser().getEmail(),
+
+            request.getDocumentName()
+
+    );
+
+} catch (Exception e) {
+
+    e.printStackTrace();
+}
 
     return "redirect:/admin/approved-requests";
 }
@@ -299,6 +356,27 @@ public String markAsPaid(@PathVariable Long id) {
     request.setPaymentStatus(PaymentStatus.PAID);
 
     printRequestRepository.save(request);
+
+    // =========================
+// SEND PAYMENT EMAIL
+// =========================
+
+try {
+
+    emailService.sendPaymentEmail(
+
+            request.getUser().getEmail(),
+
+            request.getDocumentName(),
+
+            request.getAmount()
+
+    );
+
+} catch (Exception e) {
+
+    e.printStackTrace();
+}
 
     return "redirect:/admin/payment-requests";
 }
