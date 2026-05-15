@@ -1,55 +1,102 @@
 <!DOCTYPE html>
 <html>
 <head>
+
     <title>Login - Print App</title>
 
     <!-- Google Font -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap"
+          rel="stylesheet">
 
     <!-- CSS -->
     <link rel="stylesheet" href="/style.css">
+
 </head>
 <body>
 
-<button class="toggle-btn" onclick="toggleDarkMode()" id="toggle-icon">🌙</button>
+<!-- 🌙 Dark Mode -->
+<button class="toggle-btn"
+        onclick="toggleDarkMode()"
+        id="toggle-icon">🌙</button>
 
 <div class="form-container">
 
     <h2>🔐 Login</h2>
 
-    <!-- Spring Security Login Form -->
-    <form method="POST" action="/perform_login">
+    <!-- INFO MESSAGE -->
+    <div style="
+        margin-bottom:20px;
+        padding:12px;
+        border-radius:10px;
+        background:#f5f5f5;
+        font-size:14px;
+        line-height:1.6;">
 
-        <!-- IMPORTANT: name="username" -->
+        📧 Please use a valid email address while logging in.
+
+        <br><br>
+
+        All request updates and notifications
+        will be sent to your registered email.
+
+    </div>
+
+    <!-- Spring Security Login Form -->
+    <form method="POST"
+          action="/perform_login">
+
+        <!-- Email -->
         <label>Email</label>
+
         <input type="email"
                name="username"
                required>
 
-        <!-- IMPORTANT: name="password" -->
+        <!-- Password -->
         <label>Password</label>
+
         <input type="password"
                name="password"
                required>
 
-        <button type="submit">Login</button>
+        <button type="submit">
+
+            Login
+
+        </button>
 
     </form>
 
-    <!-- Error Messages -->
+    <!-- Messages -->
     <div class="thank-you-note">
 
-        <p th:if="${param.error}" style="color:red;">
+        <!-- Invalid Login -->
+        <p th:if="${param.error}"
+           style="color:red;">
+
             Invalid email or password ❌
+
         </p>
 
-        <p th:if="${param.logout}" style="color:green;">
+        <!-- Logout -->
+        <p th:if="${param.logout}"
+           style="color:green;">
+
             Logged out successfully ✅
+
         </p>
 
+        <!-- Signup -->
         <p>
+
             New user?
-            <a href="/signup">Sign Up</a>
+
+            <a href="/signup">
+
+                Sign Up
+
+            </a>
+
         </p>
 
     </div>

@@ -543,34 +543,6 @@ public String confirmRequest(
         SessionStatus sessionStatus,
         Principal principal) {
 
-    try {
-
-        String finalDir = System.getProperty("user.dir") + "/uploads/";
-        File dir = new File(finalDir);
-
-        if (!dir.exists()) {
-            dir.mkdirs();
-        }
-
-        File tempFile = new File(printRequest.getFilePath());
-
-        String finalPath = finalDir + printRequest.getFileName();
-        File finalFile = new File(finalPath);
-
-        // Move file
-        tempFile.renameTo(finalFile);
-
-        printRequest.setFilePath(finalPath);
-
-    } catch (Exception e) {
-
-        e.printStackTrace();
-
-        model.addAttribute("error", "Error saving file.");
-
-        return "request";
-    }
-
     // =========================
     // Attach Logged-in User
     // =========================
@@ -623,6 +595,18 @@ public String confirmRequest(
 
         e.printStackTrace();
     }
+
+    // =========================
+// DELETE TEMP FILE
+// =========================
+
+File tempFile =
+        new File(savedRequest.getFilePath());
+
+if (tempFile.exists()) {
+
+    tempFile.delete();
+}
 
     model.addAttribute("printRequest", savedRequest);
 
