@@ -1,97 +1,130 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
+
     <meta charset="UTF-8">
+
     <title>Print Request Confirmation</title>
 
     <!-- Google Font -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap"
+          rel="stylesheet">
 
     <!-- Common CSS -->
     <link rel="stylesheet" href="/style.css">
+
 </head>
 <body>
 
 <!-- 🌙 Dark Mode Toggle -->
-<button class="toggle-btn" onclick="toggleDarkMode()" id="toggle-icon">🌙</button>
+<button class="toggle-btn"
+        onclick="toggleDarkMode()"
+        id="toggle-icon">🌙</button>
 
 <div class="form-container">
+
     <h2>✅ Request Submitted Successfully</h2>
 
     <div class="welcome-message">
+
         <p>Your print request has been recorded.</p>
+
         <p>Thank you for using our service!</p>
-        <p>Please hand over the payment when collecting your document.</p>
+
+        <p>
+            Please hand over the payment when collecting your document.
+        </p>
+
     </div>
 
     <!-- 📄 FILE DETAILS -->
-    <div style="margin-top:20px; text-align:left;">
-        <p style="font-weight:600; margin-bottom:5px;">📄 Uploaded File:</p>
+    <div style="
+        margin-top:20px;
+        text-align:left;">
 
-        <!-- 🔥 FIXED FILE NAME DISPLAY -->
-        <p class="file-name" style="margin-bottom:10px;" 
+        <p style="
+            font-weight:600;
+            margin-bottom:5px;">
+
+            📄 Uploaded File:
+
+        </p>
+
+        <!-- FILE NAME -->
+        <p class="file-name"
+           style="margin-bottom:10px;"
            th:text="${printRequest.fileName}">
         </p>
 
-        <!-- 🔥 VIEW + DOWNLOAD BUTTONS -->
-        <div style="display:flex; gap:20px; flex-wrap:wrap;">
-            <a th:href="@{'/viewFile/' + ${printRequest.id}}" target="_blank"
-               style="color:#8ab4f8; text-decoration:none; font-weight:500;">
-                📄 View File
-            </a>
+    </div>
 
-            <a th:href="@{'/downloadFile/' + ${printRequest.id}}"
-               style="color:#1e90ff; text-decoration:none; font-weight:500;">
-                ⬇ Download File
-            </a>
-        </div>
+    <!-- 📧 EMAIL INFO -->
+    <div class="email-info-box">
+
+        📧 Email notifications will be sent regarding your request status.
+
+        <br><br>
+
+        If you do not receive any emails,
+        please check your Spam folder.
+
     </div>
 
     <!-- ⏰ Time -->
     <div class="time-display">
+
         <p id="current-date"></p>
+
         <p id="current-time"></p>
+
     </div>
 
     <!-- 🔁 Action Buttons -->
-<div style="display:flex;
-            justify-content:center;
-            gap:15px;
-            margin-top:30px;
-            flex-wrap:wrap;">
+    <div style="
+        display:flex;
+        justify-content:center;
+        gap:15px;
+        margin-top:30px;
+        flex-wrap:wrap;">
 
-    <!-- Make Another Request -->
-    <form th:action="@{/user/request}" method="get">
+        <!-- Make Another Request -->
+        <form th:action="@{/user/request}"
+              method="get">
 
-        <button type="submit">
-            ➕ Make Another Request
-        </button>
+            <button type="submit">
+                ➕ Make Another Request
+            </button>
 
-    </form>
+        </form>
 
-    <!-- Back to Dashboard -->
-    <form th:action="@{/user/dashboard}" method="get">
+        <!-- Dashboard -->
+        <form th:action="@{/user/dashboard}"
+              method="get">
 
-        <button type="submit">
-            🏠 Dashboard
-        </button>
+            <button type="submit">
+                🏠 Dashboard
+            </button>
 
-    </form>
+        </form>
 
-    <!-- Logout -->
-    <form th:action="@{/logout}" method="post">
+        <!-- Logout -->
+        <form th:action="@{/logout}"
+              method="post">
 
-        <button type="submit">
-            🚪 Logout
-        </button>
+            <button type="submit">
+                🚪 Logout
+            </button>
 
-    </form>
+        </form>
 
-</div>
+    </div>
 
     <div class="thank-you-note">
+
         <p>We appreciate your trust 🙌</p>
+
     </div>
+
 </div>
 
 <script src="/theme.js"></script>

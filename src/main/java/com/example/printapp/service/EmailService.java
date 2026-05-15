@@ -135,7 +135,7 @@ public void sendRejectionEmail(
 
     helper.setText(
 
-            "Your print request has been rejected.\n\n"
+            "We’re sorry, but your print request could not be processed at this time.\n\n"
 
             + "Document: " + documentName + "\n\n"
 
@@ -170,11 +170,11 @@ public void sendCompletionEmail(
 
     helper.setText(
 
-            "Your print request has been completed.\n\n"
+            "Your print request has been completed and is ready for collection.\n\n"
 
             + "Document: " + documentName + "\n\n"
 
-            + "You can now collect your printed document."
+            + "Please make sure to collect your printed document."
 
     );
 

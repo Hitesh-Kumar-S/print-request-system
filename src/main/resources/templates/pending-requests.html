@@ -54,6 +54,52 @@
 
     <h2>⏳ Pending Print Requests</h2>
 
+    <!-- =========================
+     ANALYTICS CARDS
+========================= -->
+
+<div class="analytics-container">
+
+    <!-- Total Requests -->
+    <div class="analytics-card">
+
+        <h3>📄 Total Requests</h3>
+
+        <p th:text="${totalRequests}"></p>
+
+    </div>
+
+    <!-- Pending -->
+    <div class="analytics-card">
+
+        <h3>⏳ Pending</h3>
+
+        <p th:text="${pendingRequests}"></p>
+
+    </div>
+
+    <!-- Approved -->
+    <div class="analytics-card">
+
+        <h3>✅ Approved</h3>
+
+        <p th:text="${approvedRequests}"></p>
+
+    </div>
+
+    <!-- Revenue -->
+    <div class="analytics-card">
+
+        <h3>💰 Revenue</h3>
+
+        <p>
+            ₹<span th:text="${totalRevenue}"></span>
+        </p>
+
+    </div>
+
+</div>
+<div class="table-container">
     <table>
 
         <thead>
@@ -89,30 +135,50 @@
 
             <td th:text="${request.amount}"></td>
 
-            <td th:text="${request.paymentStatus}"></td>
+            <td>
+
+    <span class="badge"
+          th:classappend="
+
+            ${request.paymentStatus.name() == 'PAID'} ?
+
+            ' badge-paid' :
+
+            ' badge-unpaid'"
+
+          th:text="${request.paymentStatus}">
+    </span>
+
+</td>
 
             <td>
 
-                <!-- Approve -->
-                <a th:href="@{'/admin/approve/' + ${request.id}}">
-                    ✅ Approve
-                </a>
+    <!-- Approve -->
+    <a th:href="@{'/admin/approve/' + ${request.id}}"
+       class="action-btn btn-approve">
 
-                <br><br>
+        Approve
 
-                <!-- Reject -->
-                <a th:href="@{'/admin/reject/' + ${request.id}}">
-                    ❌ Reject
-                </a>
+    </a>
 
-            </td>
+    <br><br>
+
+    <!-- Reject -->
+    <a th:href="@{'/admin/reject/' + ${request.id}}"
+       class="action-btn btn-reject">
+
+        Reject
+
+    </a>
+
+</td>
 
         </tr>
 
         </tbody>
 
     </table>
-
+</div>
     <br>
 
     <a th:href="@{/admin/dashboard}">

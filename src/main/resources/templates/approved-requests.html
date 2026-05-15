@@ -89,16 +89,33 @@
 
             <td th:text="${request.amount}"></td>
 
-            <td th:text="${request.paymentStatus}"></td>
+            <td>
+
+    <span class="badge"
+          th:classappend="
+
+            ${request.paymentStatus.name() == 'PAID'} ?
+
+            ' badge-paid' :
+
+            ' badge-unpaid'"
+
+          th:text="${request.paymentStatus}">
+    </span>
+
+</td>
 
             <td>
 
-                <!-- Complete -->
-                <a th:href="@{'/admin/complete/' + ${request.id}}">
-                    🎉 Complete
-                </a>
+    <!-- Complete -->
+    <a th:href="@{'/admin/complete/' + ${request.id}}"
+       class="action-btn btn-complete">
 
-            </td>
+        Complete
+
+    </a>
+
+</td>
 
         </tr>
 

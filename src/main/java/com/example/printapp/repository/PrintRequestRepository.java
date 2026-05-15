@@ -30,5 +30,9 @@ public interface PrintRequestRepository
 
     List<PrintRequest> findByPaymentStatus(
         PaymentStatus paymentStatus
-);
+    );
+
+    long countByStatus(RequestStatus status);
+
+    long countByPaymentStatus(PaymentStatus paymentStatus);
 }

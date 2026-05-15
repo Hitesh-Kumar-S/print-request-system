@@ -293,7 +293,7 @@ try {
 
     e.printStackTrace();
 }
-
+    
     return "redirect:/admin/pending-requests";
 }
 
@@ -341,6 +341,48 @@ public String pendingRequests(Model model) {
             );
 
     model.addAttribute("requests", requests);
+
+    // =========================
+    // DASHBOARD ANALYTICS
+    // =========================
+
+    long totalRequests =
+            printRequestRepository.count();
+
+    long pendingRequests =
+            printRequestRepository.countByStatus(
+                    RequestStatus.PENDING);
+
+    long approvedRequests =
+            printRequestRepository.countByStatus(
+                    RequestStatus.APPROVED);
+
+    List<PrintRequest> allRequests =
+            printRequestRepository.findAll();
+
+    double totalRevenue = allRequests.stream()
+            .filter(r ->
+                    r.getPaymentStatus() ==
+                            PaymentStatus.PAID)
+            .mapToDouble(PrintRequest::getAmount)
+            .sum();
+
+    // Send analytics to UI
+    model.addAttribute(
+            "totalRequests",
+            totalRequests);
+
+    model.addAttribute(
+            "pendingRequests",
+            pendingRequests);
+
+    model.addAttribute(
+            "approvedRequests",
+            approvedRequests);
+
+    model.addAttribute(
+            "totalRevenue",
+            totalRevenue);
 
     return "pending-requests";
 }

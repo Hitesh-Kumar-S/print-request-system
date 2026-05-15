@@ -223,11 +223,39 @@
                     'dd MMM yyyy, hh:mm a')}">
             </td>
 
-            <td class="status"
-                th:text="${request.status}">
-            </td>
+            <td>
 
-            <td th:text="${request.paymentStatus}"></td>
+    <span class="badge"
+          th:classappend="
+
+            ${request.status.name() == 'PENDING'} ? ' badge-pending' :
+
+            (${request.status.name() == 'APPROVED'} ? ' badge-approved' :
+
+            (${request.status.name() == 'REJECTED'} ? ' badge-rejected' :
+
+            ' badge-completed'))"
+
+          th:text="${request.status}">
+    </span>
+
+</td>
+
+            <td>
+
+    <span class="badge"
+          th:classappend="
+
+            ${request.paymentStatus.name() == 'PAID'} ?
+
+            ' badge-paid' :
+
+            ' badge-unpaid'"
+
+          th:text="${request.paymentStatus}">
+    </span>
+
+</td>
 
         </tr>
 

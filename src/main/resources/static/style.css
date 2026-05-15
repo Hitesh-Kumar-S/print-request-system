@@ -168,3 +168,267 @@ button:hover {
         transform: translateY(0);
     }
 }
+
+/* =========================
+   STATUS BADGES
+========================= */
+
+.badge {
+
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+    color: white;
+    display: inline-block;
+}
+
+/* Pending */
+.badge-pending {
+
+    background-color: #f39c12;
+}
+
+/* Approved */
+.badge-approved {
+
+    background-color: #27ae60;
+}
+
+/* Rejected */
+.badge-rejected {
+
+    background-color: #e74c3c;
+}
+
+/* Completed */
+.badge-completed {
+
+    background-color: #3498db;
+}
+
+/* Paid */
+.badge-paid {
+
+    background-color: #2ecc71;
+}
+
+/* Unpaid */
+.badge-unpaid {
+
+    background-color: #7f8c8d;
+}
+
+/* =========================
+   ACTION BUTTONS
+========================= */
+
+.action-btn {
+
+    display: inline-block;
+    padding: 8px 14px;
+    border-radius: 8px;
+    color: white;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+    transition: 0.3s;
+}
+
+.action-btn:hover {
+
+    opacity: 0.9;
+    transform: scale(1.03);
+}
+
+/* Approve */
+.btn-approve {
+
+    background-color: #27ae60;
+}
+
+/* Reject */
+.btn-reject {
+
+    background-color: #e74c3c;
+}
+
+/* Complete */
+.btn-complete {
+
+    background-color: #3498db;
+}
+
+/* =========================
+   ANALYTICS CARDS
+========================= */
+
+.analytics-container {
+
+    display: grid;
+    grid-template-columns:
+            repeat(auto-fit, minmax(220px, 1fr));
+
+    gap: 20px;
+    margin: 30px 0;
+}
+
+.analytics-card {
+
+    padding: 22px;
+    border-radius: 16px;
+
+    background: #f5f5f5;
+
+    text-align: center;
+
+    box-shadow:
+            0 4px 10px rgba(0,0,0,0.08);
+
+    transition: 0.3s;
+}
+
+.analytics-card:hover {
+
+    transform: translateY(-4px);
+}
+
+.analytics-card h3 {
+
+    margin-bottom: 12px;
+    font-size: 18px;
+}
+
+.analytics-card p {
+
+    font-size: 28px;
+    font-weight: 700;
+}
+
+/* =========================
+   TABLE STYLING
+========================= */
+
+table {
+
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow:
+            0 4px 10px rgba(0,0,0,0.08);
+}
+
+th {
+
+    background: #f5f5f5;
+    font-weight: 600;
+    padding: 16px;
+    text-align: center;
+}
+
+td {
+
+    padding: 14px;
+    text-align: center;
+    border-bottom: 1px solid #eee;
+}
+
+/* Zebra Rows */
+tr:nth-child(even) {
+
+    background-color: #fafafa;
+}
+
+/* Hover Effect */
+tr:hover {
+
+    background-color: #f1f7ff;
+    transition: 0.2s;
+}
+
+/* =========================
+   RESPONSIVE TABLES
+========================= */
+
+.table-container {
+
+    width: 100%;
+    overflow-x: auto;
+}
+
+/* =========================
+   RESPONSIVE DESIGN
+========================= */
+
+@media (max-width: 768px) {
+
+    .analytics-container {
+
+        grid-template-columns: 1fr;
+    }
+
+    .action-btn {
+
+        display: block;
+        margin-bottom: 10px;
+    }
+
+    h2 {
+
+        font-size: 24px;
+    }
+
+    table {
+
+        font-size: 14px;
+    }
+}
+
+/* =========================
+   DARK MODE TABLE FIX
+========================= */
+
+body.dark-mode table {
+
+    background: #1e1e1e;
+    color: white;
+}
+
+body.dark-mode th {
+
+    background: #2c2c2c;
+    color: white;
+}
+
+body.dark-mode td {
+
+    color: white;
+    border-bottom: 1px solid #444;
+}
+
+body.dark-mode tr:nth-child(even) {
+
+    background-color: #252525;
+}
+
+body.dark-mode tr:hover {
+
+    background-color: #333;
+}
+
+/* Analytics Cards */
+body.dark-mode .analytics-card {
+
+    background: #1f1f1f;
+    color: white;
+}
+
+/* Email Info Box */
+body.dark-mode .email-info-box {
+
+    background: #2a2a2a;
+    color: white;
+}
