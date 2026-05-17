@@ -432,3 +432,25 @@ body.dark-mode .email-info-box {
     background: #2a2a2a;
     color: white;
 }
+
+/* =========================
+   INFO BOX
+========================= */
+
+.info-box {
+
+    margin-bottom: 20px;
+    padding: 12px;
+    border-radius: 10px;
+    background: #f5f5f5;
+    font-size: 14px;
+    line-height: 1.6;
+    color: #222;
+}
+
+/* Dark Mode */
+body.dark-mode .info-box {
+
+    background: #2a2a2a;
+    color: white;
+}
