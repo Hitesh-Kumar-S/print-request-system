@@ -10,6 +10,7 @@ import com.example.printapp.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.http.ResponseEntity;
 
 @RestController
 @RequestMapping("/auth")
@@ -25,31 +26,31 @@ public class AuthController {
     // =========================
 
     @PostMapping("/signup")
-    public String signup(@Valid @RequestBody User user, 
-                        BindingResult bindingResult) {
+public ResponseEntity<String> signup(
+        @Valid @RequestBody User user,
+        BindingResult bindingResult) {
 
-        if (bindingResult.hasErrors()) {
+    if (bindingResult.hasErrors()) {
 
-    return bindingResult
-            .getAllErrors()
-            .get(0)
-            .getDefaultMessage();
-}
-
-        // Check existing email
-        if (userRepository.findByEmail(user.getEmail()).isPresent()) {
-            return "Email already registered";
-        }
-
-        // Encrypt password
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-
-        // Default role
-        user.setRole(Role.USER);
-
-        // Save user
-        userRepository.save(user);
-
-        return "User registered successfully";
+        return ResponseEntity.badRequest()
+                .body(bindingResult
+                        .getAllErrors()
+                        .get(0)
+                        .getDefaultMessage());
     }
+
+    if (userRepository.findByEmail(user.getEmail()).isPresent()) {
+
+        return ResponseEntity.badRequest()
+                .body("Email already registered");
+    }
+
+    user.setPassword(passwordEncoder.encode(user.getPassword()));
+
+    user.setRole(Role.USER);
+
+    userRepository.save(user);
+
+    return ResponseEntity.ok("User registered successfully");
+}
 }
