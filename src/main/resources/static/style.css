@@ -439,18 +439,62 @@ body.dark-mode .email-info-box {
 
 .info-box {
 
-    margin-bottom: 20px;
-    padding: 12px;
-    border-radius: 10px;
-    background: #f5f5f5;
-    font-size: 14px;
-    line-height: 1.6;
-    color: #222;
+    margin: 25px 0;
+    padding: 16px 20px;
+
+    background: #eef5ff;
+    border-left: 5px solid var(--primary-color);
+    border-radius: 12px;
+
+    font-size: 15px;
+    line-height: 1.8;
+
+    color: var(--text-color);
+
+    text-align: left;
+
+    word-break: break-word;
+    overflow-wrap: break-word;
+
+    box-sizing: border-box;
 }
 
 /* Dark Mode */
 body.dark-mode .info-box {
 
-    background: #2a2a2a;
-    color: white;
+    background: #2b3442;
+    border-left: 5px solid #6ea8fe;
+    color: #f0f0f0;
+}
+
+/* =========================
+   SMALL BUTTONS
+========================= */
+
+.small-btn {
+
+    width: auto;
+    margin: 0;
+    padding: 8px 14px;
+    font-size: 14px;
+}
+
+.btn-green {
+
+    background: #27ae60;
+}
+
+.btn-green:hover {
+
+    background: #219150;
+}
+
+.btn-blue {
+
+    background: var(--primary-color);
+}
+
+.btn-blue:hover {
+
+    background: #365fcf;
 }

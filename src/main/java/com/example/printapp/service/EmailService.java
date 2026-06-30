@@ -8,6 +8,7 @@ import org.springframework.core.io.FileSystemResource;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
+import org.springframework.scheduling.annotation.Async;
 
 import java.io.File;
 
@@ -21,17 +22,23 @@ public class EmailService {
     // SEND PRINT REQUEST EMAIL
     // =========================
 
-    public void sendPrintRequestEmail(
+    @Async("emailTaskExecutor")
+public void sendPrintRequestEmail(
 
-            String toEmail,
-            String userEmail,
-            String documentName,
-            int pages,
-            int copies,
-            double amount,
-            String filePath
+        String toEmail,
+        String userEmail,
+        String documentName,
+        String sided,
+        int pages,
+        int copies,
+        double amount,
+        String filePath
 
-    ) throws MessagingException {
+) {
+
+    File tempFile = new File(filePath);
+
+    try {
 
         MimeMessage message =
                 mailSender.createMimeMessage();
@@ -52,6 +59,8 @@ public class EmailService {
 
                 + "Document: " + documentName + "\n"
 
+                +  "Print Type: " + sided + "\n"
+
                 + "Pages: " + pages + "\n"
 
                 + "Copies: " + copies + "\n"
@@ -65,8 +74,7 @@ public class EmailService {
         // =========================
 
         FileSystemResource file =
-                new FileSystemResource(
-                        new File(filePath));
+                new FileSystemResource(tempFile);
 
         helper.addAttachment(
                 file.getFilename(),
@@ -74,12 +82,36 @@ public class EmailService {
 
         // SEND MAIL
         mailSender.send(message);
+
+    } catch (Exception e) {
+
+        System.err.println("Failed to send print request email:");
+        e.printStackTrace();
+
+    } finally {
+
+        // =========================
+        // DELETE TEMP FILE
+        // =========================
+
+        if (tempFile.exists()) {
+
+    if (tempFile.delete()) {
+        System.out.println("Temporary file deleted successfully.");
+    } else {
+        System.err.println("Failed to delete temporary file: "
+                + tempFile.getAbsolutePath());
     }
 
+} else {
+    System.out.println("Temporary file not found.");
+}
+    }
+}
     // =========================
 // APPROVAL NOTIFICATION
 // =========================
-
+@Async("emailTaskExecutor")
 public void sendApprovalEmail(
 
         String toEmail,
@@ -114,7 +146,7 @@ public void sendApprovalEmail(
         // =========================
 // REJECTION NOTIFICATION
 // =========================
-
+@Async("emailTaskExecutor")
 public void sendRejectionEmail(
 
         String toEmail,
@@ -149,7 +181,7 @@ public void sendRejectionEmail(
         // =========================
 // COMPLETION NOTIFICATION
 // =========================
-
+@Async("emailTaskExecutor")
 public void sendCompletionEmail(
 
         String toEmail,
@@ -184,7 +216,7 @@ public void sendCompletionEmail(
 // =========================
 // PAYMENT NOTIFICATION
 // =========================
-
+@Async("emailTaskExecutor")
 public void sendPaymentEmail(
 
         String toEmail,

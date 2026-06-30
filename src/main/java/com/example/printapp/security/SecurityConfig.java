@@ -67,15 +67,13 @@ private CustomAuthenticationSuccessHandler
 
                 // Public pages
                 .requestMatchers(
-                        "/",
-                        "/login",
-                        "/signup",
-                        "/auth/signup",
-                        "/style.css",
-                        "/theme.js",
-                        "/error"
+                    "/",
+                    "/login",
+                    "/signup",
+                    "/favicon.png",
+                    "/style.css",
+                    "/theme.js"
                 ).permitAll()
-
                 // Admin pages
                 .requestMatchers("/admin/**")
                 .hasRole("ADMIN")

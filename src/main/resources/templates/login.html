@@ -2,7 +2,7 @@
 <html>
 <head>
 
-    <title>Login - Print App</title>
+    <title>Login - PrintFlow</title>
 
     <!-- Google Font -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap"
@@ -21,12 +21,12 @@
 
 <div class="form-container">
 
-    <h2>🔐 Login</h2>
+    <h2>Login</h2>
 
     <!-- INFO MESSAGE -->
     <div class="info-box">
 
-        📧 Please use a valid email address while logging in.
+        Please use a valid email address while logging in.
 
         <br><br>
 
@@ -68,7 +68,7 @@
         <p th:if="${param.error}"
            style="color:red;">
 
-            Invalid email or password ❌
+            Invalid email or password
 
         </p>
 
@@ -76,7 +76,7 @@
         <p th:if="${param.logout}"
            style="color:green;">
 
-            Logged out successfully ✅
+            Logged out successfully
 
         </p>
 

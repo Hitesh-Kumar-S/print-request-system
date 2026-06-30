@@ -14,6 +14,7 @@ import java.util.List;
 import java.time.LocalDateTime;
 
 import jakarta.validation.Valid;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.validation.BindingResult;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,8 +58,9 @@ public class PrintRequestController {
     @GetMapping("/user/request")
 public String showRequestForm(Model model) {
 
-    // Create fresh request object
-    model.addAttribute("printRequest", new PrintRequest());
+    if (!model.containsAttribute("printRequest")) {
+        model.addAttribute("printRequest", new PrintRequest());
+    }
 
     return "request";
 }
@@ -454,10 +456,11 @@ public String paymentRequests(Model model) {
     // 🔹 STEP 1: SUBMIT → TEMP SAVE
     @PostMapping("/user/submitRequest")
     public String submitRequest(
-            @Valid @ModelAttribute("printRequest") PrintRequest printRequest,
-            BindingResult bindingResult,
-            @RequestParam("file") MultipartFile file,
-            Model model) {
+        @Valid @ModelAttribute("printRequest") PrintRequest printRequest,
+        BindingResult bindingResult,
+        @RequestParam("file") MultipartFile file,
+        Model model,
+        HttpSession session) {
 
         if (bindingResult.hasErrors()) {
 
@@ -507,19 +510,13 @@ public String paymentRequests(Model model) {
                 dir.mkdirs();
             }
 
-            String cleanName = printRequest.getName().replaceAll("\\s+", "_");
-            cleanName = cleanName.replaceAll("[^a-zA-Z0-9_]", "");
-
-            String cleanFileName = originalFileName.replaceAll("\\s+", "_");
-
-            String fileName = cleanName + "_" + System.currentTimeMillis() + "_" + cleanFileName;
-
-            String tempFilePath = tempDir + fileName;
+            String tempFilePath = tempDir + System.currentTimeMillis() + ".pdf";
 
             file.transferTo(new File(tempFilePath));
 
-            printRequest.setFileName(fileName);
-            printRequest.setFilePath(tempFilePath);
+            // printRequest.setFileName(fileName);
+
+            session.setAttribute("tempFilePath", tempFilePath);
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -541,7 +538,8 @@ public String confirmRequest(
         @ModelAttribute("printRequest") PrintRequest printRequest,
         Model model,
         SessionStatus sessionStatus,
-        Principal principal) {
+        Principal principal,
+        HttpSession session) {
 
     // =========================
     // Attach Logged-in User
@@ -567,6 +565,9 @@ public String confirmRequest(
     PrintRequest savedRequest =
             printRequestRepository.save(printRequest);
 
+    String tempFilePath =
+        (String) session.getAttribute("tempFilePath");
+
     // =========================
     // SEND EMAIL TO ADMIN
     // =========================
@@ -581,13 +582,15 @@ public String confirmRequest(
 
                 savedRequest.getDocumentName(),
 
+                savedRequest.getSided(),
+
                 savedRequest.getPages(),
 
                 savedRequest.getCopies(),
 
                 savedRequest.getAmount(),
 
-                savedRequest.getFilePath()
+                tempFilePath
 
         );
 
@@ -596,17 +599,7 @@ public String confirmRequest(
         e.printStackTrace();
     }
 
-    // =========================
-// DELETE TEMP FILE
-// =========================
-
-File tempFile =
-        new File(savedRequest.getFilePath());
-
-if (tempFile.exists()) {
-
-    tempFile.delete();
-}
+    session.removeAttribute("tempFilePath");
 
     model.addAttribute("printRequest", savedRequest);
 

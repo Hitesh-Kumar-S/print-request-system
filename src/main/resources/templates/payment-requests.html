@@ -44,7 +44,7 @@
 
 <div class="container">
 
-    <h2>💰 Pending Payments</h2>
+    <h2>Pending Payments</h2>
 
     <table>
 
@@ -112,9 +112,11 @@
 
             <td>
 
-                <a th:href="@{'/admin/pay/' + ${request.id}}">
-                    💰 Mark Paid
-                </a>
+                <form th:action="@{'/admin/pay/' + ${request.id}}" method="get">
+    <button type="submit" class="small-btn btn-green">
+        Mark Paid
+    </button>
+</form>
 
             </td>
 
@@ -126,9 +128,11 @@
 
     <br>
 
-    <a th:href="@{/admin/dashboard}">
-        ⬅ Back to Dashboard
-    </a>
+    <form th:action="@{/admin/dashboard}" method="get">
+    <button type="submit" class="small-btn btn-blue">
+        Back to Dashboard
+    </button>
+</form>
 
 </div>
 

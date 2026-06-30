@@ -76,14 +76,6 @@ private LocalDateTime updatedAt;
 
 private LocalDateTime completedAt;
 
-    // =========================
-    // File Details
-    // =========================
-
-    private String fileName;
-
-    private String filePath;
-
     @PrePersist
 public void prePersist() {
 
@@ -190,43 +182,27 @@ public void preUpdate() {
         this.paymentStatus = paymentStatus;
     }
 
-    public String getFileName() {
-        return fileName;
-    }
-
-    public void setFileName(String fileName) {
-        this.fileName = fileName;
-    }
-
-    public String getFilePath() {
-        return filePath;
-    }
-
-    public void setFilePath(String filePath) {
-        this.filePath = filePath;
-    }
-
     public LocalDateTime getCreatedAt() {
-    return createdAt;
-}
+        return createdAt;
+    }
 
-public void setCreatedAt(LocalDateTime createdAt) {
-    this.createdAt = createdAt;
-}
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
 
-public LocalDateTime getUpdatedAt() {
-    return updatedAt;
-}
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
 
-public void setUpdatedAt(LocalDateTime updatedAt) {
-    this.updatedAt = updatedAt;
-}
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
 
-public LocalDateTime getCompletedAt() {
-    return completedAt;
-}
+    public LocalDateTime getCompletedAt() {
+        return completedAt;
+    }
 
-public void setCompletedAt(LocalDateTime completedAt) {
-    this.completedAt = completedAt;
-}
+    public void setCompletedAt(LocalDateTime completedAt) {
+        this.completedAt = completedAt;
+    }
 }

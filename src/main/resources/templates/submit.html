@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Print Request Summary</title>
+    <title>PrintFlow Request Summary</title>
 
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
 
@@ -14,7 +14,7 @@
 <button class="toggle-btn" onclick="toggleDarkMode()" id="toggle-icon">🌙</button>
 
 <div class="form-container">
-    <h2>📄 Print Request Summary</h2>
+    <h2>PrintFlow Request Summary</h2>
 
     <div class="welcome-message">
         <p>Please review your request before proceeding</p>
@@ -30,11 +30,6 @@
         <tr>
             <td><strong>Document Name:</strong></td>
             <td th:text="${printRequest.documentName}">Document</td>
-        </tr>
-
-        <tr>
-            <td style="vertical-align: top;"><strong>Uploaded File:</strong></td>
-            <td class="file-name" th:text="${printRequest.fileName}">File</td>
         </tr>
 
         <tr>
@@ -54,7 +49,7 @@
 
         <tr>
             <td><strong>Sided:</strong></td>
-            <td th:text="${printRequest.sided}">single</td>
+            <td th:text="${printRequest.sided}">One Side</td>
         </tr>
 
         <tr>
@@ -68,7 +63,7 @@
         
         <!-- Back -->
         <form th:action="@{/user/request}" method="get">
-            <button type="submit">⬅ Back</button>
+            <button type="submit">Back</button>
         </form>
 
         <!-- Proceed -->
@@ -83,11 +78,7 @@
             <input type="hidden" name="sided" th:value="${printRequest.sided}" />
             <input type="hidden" name="amount" th:value="${printRequest.amount}" />
 
-            <!-- 🔥 NEW (VERY IMPORTANT) -->
-            <input type="hidden" name="fileName" th:value="${printRequest.fileName}" />
-            <input type="hidden" name="filePath" th:value="${printRequest.filePath}" />
-
-            <button type="submit">✅ Proceed</button>
+            <button type="submit">Proceed</button>
         </form>
     </div>
 
@@ -97,7 +88,7 @@
     </div>
 
     <div class="thank-you-note">
-        <p>Make sure everything looks correct 👍</p>
+        <p>Make sure everything looks correct</p>
     </div>
 </div>
 

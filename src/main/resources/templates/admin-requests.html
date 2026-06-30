@@ -86,7 +86,7 @@
                           border:1px solid #ccc;">
 
             <button type="submit">
-                🔍 Search
+                Search
             </button>
 
             <!-- View All Requests -->
@@ -98,7 +98,7 @@
                     border-radius:8px;
                     border:1px solid #ccc;">
 
-                📋 View All Requests
+                View All Requests
             </a>
 
         </form>
@@ -145,7 +145,7 @@
             </select>
 
             <button type="submit">
-                🎯 Filter
+                Filter
             </button>
 
         </form>
@@ -175,7 +175,7 @@
             </select>
 
             <button type="submit">
-                💰 Filter Payment
+                Filter Payment
             </button>
 
         </form>
@@ -319,16 +319,18 @@
                 border-radius:8px;
                 text-decoration:none;">
 
-            Next ➡
+            Next
         </a>
 
     </div>
 
     <br>
 
-    <a th:href="@{/admin/dashboard}">
-        ⬅ Back to Dashboard
-    </a>
+    <form th:action="@{/admin/dashboard}" method="get">
+    <button type="submit" class="small-btn btn-blue">
+        Back to Dashboard
+    </button>
+</form>
 
 </div>
 

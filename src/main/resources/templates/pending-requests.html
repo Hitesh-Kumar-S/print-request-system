@@ -52,7 +52,7 @@
 
 <div class="container">
 
-    <h2>⏳ Pending Print Requests</h2>
+    <h2>Pending Print Requests</h2>
 
     <!-- =========================
      ANALYTICS CARDS
@@ -63,7 +63,7 @@
     <!-- Total Requests -->
     <div class="analytics-card">
 
-        <h3>📄 Total Requests</h3>
+        <h3>Total Requests</h3>
 
         <p th:text="${totalRequests}"></p>
 
@@ -72,7 +72,7 @@
     <!-- Pending -->
     <div class="analytics-card">
 
-        <h3>⏳ Pending</h3>
+        <h3>Pending</h3>
 
         <p th:text="${pendingRequests}"></p>
 
@@ -81,7 +81,7 @@
     <!-- Approved -->
     <div class="analytics-card">
 
-        <h3>✅ Approved</h3>
+        <h3>Approved</h3>
 
         <p th:text="${approvedRequests}"></p>
 
@@ -90,7 +90,7 @@
     <!-- Revenue -->
     <div class="analytics-card">
 
-        <h3>💰 Revenue</h3>
+        <h3>Revenue</h3>
 
         <p>
             ₹<span th:text="${totalRevenue}"></span>
@@ -181,10 +181,11 @@
 </div>
     <br>
 
-    <a th:href="@{/admin/dashboard}">
-        ⬅ Back to Dashboard
-    </a>
-
+    <form th:action="@{/admin/dashboard}" method="get">
+    <button type="submit" class="small-btn btn-blue">
+        Back to Dashboard
+    </button>
+</form>
 </div>
 
 <script src="/theme.js"></script>

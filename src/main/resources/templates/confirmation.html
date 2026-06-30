@@ -4,7 +4,7 @@
 
     <meta charset="UTF-8">
 
-    <title>Print Request Confirmation</title>
+    <title>PrintFlow Request Confirmation</title>
 
     <!-- Google Font -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap"
@@ -23,7 +23,7 @@
 
 <div class="form-container">
 
-    <h2>✅ Request Submitted Successfully</h2>
+    <h2>Request Submitted Successfully</h2>
 
     <div class="welcome-message">
 
@@ -37,38 +37,18 @@
 
     </div>
 
-    <!-- 📄 FILE DETAILS -->
-    <div style="
-        margin-top:20px;
-        text-align:left;">
-
-        <p style="
-            font-weight:600;
-            margin-bottom:5px;">
-
-            📄 Uploaded File:
-
-        </p>
-
-        <!-- FILE NAME -->
-        <p class="file-name"
-           style="margin-bottom:10px;"
-           th:text="${printRequest.fileName}">
-        </p>
-
-    </div>
-
     <!-- 📧 EMAIL INFO -->
-    <div class="email-info-box">
+    <div class="info-box">
 
-        📧 Email notifications will be sent regarding your request status.
+    <strong>Email Notifications</strong><br><br>
 
-        <br><br>
+    Updates regarding your print request will be sent to your registered email address.
 
-        If you do not receive any emails,
-        please check your Spam folder.
+    <br><br>
 
-    </div>
+    If you don't receive an email, please check your Spam or Junk folder.
+
+</div>
 
     <!-- ⏰ Time -->
     <div class="time-display">
@@ -92,7 +72,7 @@
               method="get">
 
             <button type="submit">
-                ➕ Make Another Request
+                Make Another Request
             </button>
 
         </form>
@@ -102,7 +82,7 @@
               method="get">
 
             <button type="submit">
-                🏠 Dashboard
+                Dashboard
             </button>
 
         </form>
@@ -112,7 +92,7 @@
               method="post">
 
             <button type="submit">
-                🚪 Logout
+                Logout
             </button>
 
         </form>
@@ -121,7 +101,7 @@
 
     <div class="thank-you-note">
 
-        <p>We appreciate your trust 🙌</p>
+        <p>We appreciate your trust</p>
 
     </div>
 
