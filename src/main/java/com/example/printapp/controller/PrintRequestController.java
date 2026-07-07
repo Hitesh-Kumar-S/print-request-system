@@ -489,7 +489,7 @@ public String paymentRequests(Model model) {
         }
 
         // ❌ Size validation (5MB)
-        if (file.getSize() > 5 * 1024 * 1024) {
+        if (file.getSize() > 20 * 1024 * 1024) {
             model.addAttribute("error", "File size must be less than 5MB.");
             return "request";
         }
@@ -567,6 +567,8 @@ public String confirmRequest(
 
     String tempFilePath =
         (String) session.getAttribute("tempFilePath");
+
+    // System.out.println("Temp file path in confirmRequest: " + tempFilePath);
 
     // =========================
     // SEND EMAIL TO ADMIN

@@ -48,10 +48,10 @@
 
         <!-- Password -->
         <label>Password</label>
-
-        <input type="password"
-               name="password"
-               required>
+        <div class="password-wrapper">
+            <input type="password" name="password" id="password" required>
+            <span class="toggle-password" id="togglePasswordText" onclick="togglePassword()">Show</span>
+        </div>
 
         <button type="submit">
 
@@ -96,6 +96,22 @@
     </div>
 
 </div>
+
+<script>
+    function togglePassword() {
+        const passwordField = document.getElementById("password");
+        const toggleText = document.getElementById("togglePasswordText");
+
+        if (passwordField.type === "password") {
+            passwordField.type = "text";
+            toggleText.textContent = "Hide";
+        } else {
+            passwordField.type = "password";
+            toggleText.textContent = "Show";
+        }
+    }
+</script>
+
 
 <script src="/theme.js"></script>
 

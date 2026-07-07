@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Signup - PrintFlow</title>
 
@@ -8,6 +8,29 @@
 
     <!-- CSS -->
     <link rel="stylesheet" href="/style.css">
+
+    <style>
+        .password-wrapper {
+            position: relative;
+            width: 100%;
+        }
+
+        .password-wrapper input {
+            width: 100%;
+            padding-right: 45px;
+            box-sizing: border-box;
+        }
+
+        .toggle-password {
+            position: absolute;
+            top: 50%;
+            right: 14px;
+            transform: translateY(-50%);
+            cursor: pointer;
+            font-size: 18px;
+            user-select: none;
+        }
+    </style>
 </head>
 <body>
 
@@ -19,34 +42,34 @@
     <h2>Create Account</h2>
 
     <div class="info-box">
+        Please use a valid Gmail account while creating your account.
+        <br><br>
+        All request updates, approval notifications,
+        and print status messages will be sent
+        to your registered email address.
+    </div>
 
-    Please use a valid Gmail account while creating your account.
-
-    <br><br>
-
-    All request updates, approval notifications,
-    and print status messages will be sent
-    to your registered email address.
-
-</div>
-
-    <form id="signupForm">
+    <form th:action="@{/signup}" method="post" th:object="${user}">
 
         <label>Username</label>
-        <input type="text" id="username" required>
+        <input type="text" th:field="*{username}" required>
 
         <label>Email</label>
-        <input type="email" id="email" required>
+        <input type="email" th:field="*{email}" required>
 
         <label>Password</label>
-        <input type="password" id="password" required>
+<div class="password-wrapper">
+    <input type="password" th:field="*{password}" id="password" required>
+    <span class="toggle-password" id="togglePasswordText" onclick="togglePassword()">Show</span>
+</div>
 
         <button type="submit">Sign Up</button>
-
     </form>
 
-    <!-- Message -->
-    <p id="message" style="text-align:center; margin-top:10px;"></p>
+    <!-- Error Message -->
+    <p th:if="${error}"
+       th:text="${error}"
+       style="color:red; text-align:center; margin-top:10px;"></p>
 
     <div class="thank-you-note">
         <p>Already have an account?
@@ -56,57 +79,26 @@
 
 </div>
 
-<script>
-
-document.getElementById("signupForm").addEventListener("submit", async function(e) {
-
-    e.preventDefault();
-
-    const messageEl = document.getElementById("message");
-
-    // User object
-    const user = {
-        username: document.getElementById("username").value,
-        email: document.getElementById("email").value,
-        password: document.getElementById("password").value
-    };
-
-    try {
-
-        const res = await fetch("/auth/signup", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(user)
-        });
-
-        const message = await res.text();
-
-        if (res.ok) {
-
-            messageEl.style.color = "green";
-            messageEl.innerText = message;
-
-            // Redirect to login
-            setTimeout(() => {
-                window.location.href = "/login";
-            }, 1500);
-
-        } else {
-
-            messageEl.style.color = "red";
-            messageEl.innerText = message || "Signup failed ❌";
-        }
-
-    } catch (error) {
-
-        messageEl.style.color = "red";
-        messageEl.innerText = "Something went wrong ❌";
+<!-- <script>
+    function togglePassword() {
+        const passwordField = document.getElementById("password");
+        passwordField.type = passwordField.type === "password" ? "text" : "password";
     }
+</script> -->
 
-});
+<script>
+    function togglePassword() {
+        const passwordField = document.getElementById("password");
+        const toggleText = document.getElementById("togglePasswordText");
 
+        if (passwordField.type === "password") {
+            passwordField.type = "text";
+            toggleText.textContent = "Hide";
+        } else {
+            passwordField.type = "password";
+            toggleText.textContent = "Show";
+        }
+    }
 </script>
 
 <script src="/theme.js"></script>

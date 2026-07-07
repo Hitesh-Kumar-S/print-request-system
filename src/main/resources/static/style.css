@@ -498,3 +498,44 @@ body.dark-mode .info-box {
 
     background: #365fcf;
 }
+
+/* =========================
+   PASSWORD TOGGLE
+========================= */
+
+.password-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.password-wrapper input {
+    width: 100%;
+    padding-right: 60px;
+    box-sizing: border-box;
+}
+
+.toggle-password {
+    position: absolute;
+    top: 50%;
+    right: 14px;
+    transform: translateY(-50%);
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 600;
+    color: #666;
+    user-select: none;
+    transition: color 0.2s ease;
+}
+
+.toggle-password:hover {
+    color: var(--primary-color);
+}
+
+/* Dark mode */
+body.dark-mode .toggle-password {
+    color: #bbb;
+}
+
+body.dark-mode .toggle-password:hover {
+    color: #ffffff;
+}

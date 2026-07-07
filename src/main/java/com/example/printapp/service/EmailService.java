@@ -24,7 +24,6 @@ public class EmailService {
 
     @Async("emailTaskExecutor")
 public void sendPrintRequestEmail(
-
         String toEmail,
         String userEmail,
         String documentName,
@@ -33,82 +32,56 @@ public void sendPrintRequestEmail(
         int copies,
         double amount,
         String filePath
-
 ) {
+    File tempFile = null;
 
-    File tempFile = new File(filePath);
+    if (filePath != null && !filePath.isBlank()) {
+        tempFile = new File(filePath);
+    }
 
     try {
-
-        MimeMessage message =
-                mailSender.createMimeMessage();
-
-        MimeMessageHelper helper =
-                new MimeMessageHelper(message, true);
+        MimeMessage message = mailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message, true);
 
         helper.setTo(toEmail);
-
-        helper.setSubject(
-                "New Print Request Submitted");
+        helper.setSubject("New Print Request Submitted");
 
         helper.setText(
-
                 "A new print request has been submitted.\n\n"
-
-                + "User Email: " + userEmail + "\n"
-
-                + "Document: " + documentName + "\n"
-
-                +  "Print Type: " + sided + "\n"
-
-                + "Pages: " + pages + "\n"
-
-                + "Copies: " + copies + "\n"
-
-                + "Amount: ₹" + amount + "\n"
-
+                        + "User Email: " + userEmail + "\n"
+                        + "Document: " + documentName + "\n"
+                        + "Print Type: " + sided + "\n"
+                        + "Pages: " + pages + "\n"
+                        + "Copies: " + copies + "\n"
+                        + "Amount: ₹" + amount + "\n"
         );
 
-        // =========================
-        // ATTACH PDF
-        // =========================
+        if (tempFile != null && tempFile.exists()) {
+            FileSystemResource file = new FileSystemResource(tempFile);
+            helper.addAttachment(file.getFilename(), file);
+        }
 
-        FileSystemResource file =
-                new FileSystemResource(tempFile);
-
-        helper.addAttachment(
-                file.getFilename(),
-                file);
-
-        // SEND MAIL
         mailSender.send(message);
 
     } catch (Exception e) {
-
         System.err.println("Failed to send print request email:");
         e.printStackTrace();
 
     } finally {
-
-        // =========================
-        // DELETE TEMP FILE
-        // =========================
-
-        if (tempFile.exists()) {
-
-    if (tempFile.delete()) {
-        System.out.println("Temporary file deleted successfully.");
-    } else {
-        System.err.println("Failed to delete temporary file: "
-                + tempFile.getAbsolutePath());
-    }
-
-} else {
-    System.out.println("Temporary file not found.");
-}
+        if (tempFile != null && tempFile.exists()) {
+            if (tempFile.delete()) {
+                System.out.println("Temporary file deleted successfully.");
+            } else {
+                System.err.println("Failed to delete temporary file: "
+                        + tempFile.getAbsolutePath());
+            }
+        } else {
+            System.out.println("No temporary file found for deletion.");
+        }
     }
 }
-    // =========================
+
+// =========================
 // APPROVAL NOTIFICATION
 // =========================
 @Async("emailTaskExecutor")
