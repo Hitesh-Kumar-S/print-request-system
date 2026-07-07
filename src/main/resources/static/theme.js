@@ -19,8 +19,8 @@ function updateDateTime() {
     const timeEl = document.getElementById('current-time');
 
     if (dateEl && timeEl) {
-        dateEl.textContent = `📅 Date: ${now.toLocaleDateString('en-US', options)}`;
-        timeEl.textContent = `⏰ Time: ${now.toLocaleTimeString()}`;
+        dateEl.textContent = `Date: ${now.toLocaleDateString('en-US', options)}`;
+        timeEl.textContent = `Time: ${now.toLocaleTimeString()}`;
     }
 }
 

@@ -522,7 +522,7 @@ body.dark-mode .info-box {
     cursor: pointer;
     font-size: 12px;
     font-weight: 600;
-    color: #666;
+    color: black;
     user-select: none;
     transition: color 0.2s ease;
 }
@@ -533,9 +533,6 @@ body.dark-mode .info-box {
 
 /* Dark mode */
 body.dark-mode .toggle-password {
-    color: #bbb;
+    color: black;
 }
 
-body.dark-mode .toggle-password:hover {
-    color: #ffffff;
-}

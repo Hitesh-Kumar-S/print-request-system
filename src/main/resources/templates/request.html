@@ -16,47 +16,66 @@
 
 <div class="form-container">
     <h2>PrintFlow Request Form</h2>
-    
+
     <div class="welcome-message">
         <p>Welcome! Please fill out the form below to make your print request.</p>
     </div>
 
     <!-- 🔥 ERROR MESSAGE DISPLAY -->
     <p style="color: red; font-weight: 600;" th:if="${error}" th:text="${error}"></p>
-    
-    <form th:action="@{/user/submitRequest}" method="post" 
+
+    <form th:action="@{/user/submitRequest}" method="post"
           th:object="${printRequest}" enctype="multipart/form-data">
-        
+
         <label for="name">Name</label>
         <input type="text" id="name" th:field="*{name}" placeholder="Enter your name" required />
 
         <label for="documentName">Document Name</label>
         <input type="text" id="documentName" th:field="*{documentName}" placeholder="E.g., Resume" required />
 
-        <label for="file">Upload PDF</label>
-        <input type="file" id="file" name="file" accept="application/pdf" required />
+        <!-- Document Source -->
+        <label for="documentSource">Document Source</label>
+        <select id="documentSource" name="documentSource" onchange="toggleDocumentSource()" required>
+            <option value="upload">Upload My Own PDF</option>
+            <option value="leave-letter">Use Common Leave Letter</option>
+        </select>
 
-        <div style="font-size: 0.9rem; color: #4B7BE5; margin-top: 5px;">
-            <p style="margin-bottom: 5px; font-weight: 600;">Upload Guidelines:</p>
-            <ul style="margin: 5px 0 10px 15px;">
-                <li>Only PDF files are allowed</li>
-                <li>Maximum file size: 5MB</li>
-                <li>Use a meaningful file name (e.g., Resume.pdf, Notes.pdf)</li>
-                <li>File name will be automatically processed and stored securely</li>
-            </ul>
+        <!-- Upload Section -->
+        <div id="uploadSection">
+
+            <label for="file">Upload PDF</label>
+            <input type="file" id="file" name="file" accept="application/pdf" required />
+
+            <div style="font-size: 0.9rem; color: #4B7BE5; margin-top: 5px;">
+                <p style="margin-bottom: 5px; font-weight: 600;">Upload Guidelines:</p>
+                <ul style="margin: 5px 0 10px 15px;">
+                    <li>Only PDF files are allowed</li>
+                    <li>Maximum file size: 20MB</li>
+                    <li>Use a meaningful file name (e.g., Resume.pdf, Notes.pdf)</li>
+                    <li>File name will be automatically processed and stored securely</li>
+                </ul>
+            </div>
+
+        </div>
+
+        <!-- Leave Letter Note -->
+        <div id="leaveLetterNote" style="display: none; margin-top: 10px; font-size: 0.95rem; color: #4B7BE5;">
+            <p style="margin: 0;">
+                Common leave letter template will be used automatically.
+                No PDF upload is required.
+            </p>
         </div>
 
         <label for="pages">Number of Pages</label>
         <input type="number" id="pages" th:field="*{pages}" min="1" placeholder="Enter number of pages" required />
 
         <label for="copies">Number of Copies</label>
-
         <input type="number"
-                id="copies"
-                th:field="*{copies}"
-                min="1"
-                value="1"
-                required />
+               id="copies"
+               th:field="*{copies}"
+               min="1"
+               value="1"
+               required />
 
         <label for="color">Color</label>
         <select id="color" th:field="*{color}">
@@ -82,6 +101,57 @@
         <p>Thank you for using our Print Request Service!</p>
     </div>
 </div>
+
+<script>
+    function toggleDocumentSource() {
+        const documentSource = document.getElementById("documentSource").value;
+        const uploadSection = document.getElementById("uploadSection");
+        const leaveLetterNote = document.getElementById("leaveLetterNote");
+        const fileInput = document.getElementById("file");
+
+        const documentNameInput = document.getElementById("documentName");
+        const pagesInput = document.getElementById("pages");
+
+        if (documentSource === "leave-letter") {
+            // Hide upload section
+            uploadSection.style.display = "none";
+            leaveLetterNote.style.display = "block";
+            fileInput.removeAttribute("required");
+            fileInput.value = "";
+
+            // Auto-fill fields
+            documentNameInput.value = "Common Leave Letter";
+            pagesInput.value = 1;
+
+            // Make them readonly
+            documentNameInput.readOnly = true;
+            pagesInput.readOnly = true;
+
+        } else {
+            // Show upload section
+            uploadSection.style.display = "block";
+            leaveLetterNote.style.display = "none";
+            fileInput.setAttribute("required", "required");
+
+            // Unlock fields
+            documentNameInput.readOnly = false;
+            pagesInput.readOnly = false;
+
+            // Optional: clear auto-filled values only if they were from leave letter
+            if (documentNameInput.value === "Common Leave Letter") {
+                documentNameInput.value = "";
+            }
+
+            if (pagesInput.value === "1") {
+                pagesInput.value = "";
+            }
+        }
+    }
+
+    window.onload = function () {
+        toggleDocumentSource();
+    };
+</script>
 
 <script src="/theme.js"></script>
 

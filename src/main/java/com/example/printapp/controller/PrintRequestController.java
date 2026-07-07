@@ -31,15 +31,27 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
 import java.io.File;
 import java.io.IOException;
+
+import org.springframework.core.io.ClassPathResource;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 
 @Controller
 @SessionAttributes("printRequest")
 public class PrintRequestController {
 
-    private static final double COLOR_RATE = 3.0;
-    private static final double BW_RATE = 2.0;
+    private static final double COLOR_RATE = 4.0;
+    private static final double BW_RATE = 3.0;
 
     @Autowired
     private PrintRequestRepository printRequestRepository;
@@ -454,97 +466,138 @@ public String paymentRequests(Model model) {
 }
 
     // 🔹 STEP 1: SUBMIT → TEMP SAVE
-    @PostMapping("/user/submitRequest")
-    public String submitRequest(
+@PostMapping("/user/submitRequest")
+public String submitRequest(
         @Valid @ModelAttribute("printRequest") PrintRequest printRequest,
         BindingResult bindingResult,
         @RequestParam("file") MultipartFile file,
+        @RequestParam("documentSource") String documentSource,
         Model model,
-        HttpSession session) {
+        HttpSession session,
+        RedirectAttributes redirectAttributes) {
 
-        if (bindingResult.hasErrors()) {
-
-    model.addAttribute(
-            "error",
-            bindingResult.getAllErrors()
-                    .get(0)
-                    .getDefaultMessage()
-    );
-
-    return "request";
-}
-
-        // ❌ Empty check
-        if (file.isEmpty()) {
-            model.addAttribute("error", "Please upload a PDF file.");
-            return "request";
-        }
-
-        String originalFileName = file.getOriginalFilename();
-
-        // ❌ PDF validation
-        if (originalFileName == null || !originalFileName.toLowerCase().endsWith(".pdf")) {
-            model.addAttribute("error", "Only PDF files are allowed.");
-            return "request";
-        }
-
-        // ❌ Size validation (5MB)
-        if (file.getSize() > 20 * 1024 * 1024) {
-            model.addAttribute("error", "File size must be less than 5MB.");
-            return "request";
-        }
-
-        sanitizeInput(printRequest);
-
-        if (!isValidPrintRequest(printRequest)) {
-            model.addAttribute("error", "Invalid Print Request.");
-            return "request";
-        }
-
-        // 💾 TEMP SAVE
-        try {
-            String tempDir = System.getProperty("user.dir") + "/uploads/temp/";
-            File dir = new File(tempDir);
-
-            if (!dir.exists()) {
-                dir.mkdirs();
-            }
-
-            String tempFilePath = tempDir + System.currentTimeMillis() + ".pdf";
-
-            file.transferTo(new File(tempFilePath));
-
-            // printRequest.setFileName(fileName);
-
-            session.setAttribute("tempFilePath", tempFilePath);
-
-        } catch (IOException e) {
-            e.printStackTrace();
-            model.addAttribute("error", "File upload failed.");
-            return "request";
-        }
-
-        double amount = calculateAmount(printRequest);
-        printRequest.setAmount(amount);
-
-        model.addAttribute("printRequest", printRequest);
-
-        return "submit";
+    if (bindingResult.hasErrors()) {
+        model.addAttribute(
+                "error",
+                bindingResult.getAllErrors()
+                        .get(0)
+                        .getDefaultMessage()
+        );
+        return "request";
     }
 
+    sanitizeInput(printRequest);
+
+    if (!isValidPrintRequest(printRequest)) {
+        model.addAttribute("error", "Invalid Print Request.");
+        return "request";
+    }
+
+    try {
+        String tempDir = System.getProperty("user.dir") + "/uploads/temp/";
+        File dir = new File(tempDir);
+
+        if (!dir.exists()) {
+            dir.mkdirs();
+        }
+
+        String tempFilePath = tempDir + System.currentTimeMillis() + ".pdf";
+
+        // =========================
+        // CASE 1: USER UPLOADS OWN PDF
+        // =========================
+        if ("upload".equals(documentSource)) {
+
+            if (file.isEmpty()) {
+                model.addAttribute("error", "Please upload a PDF file.");
+                return "request";
+            }
+
+            String originalFileName = file.getOriginalFilename();
+
+            if (originalFileName == null || !originalFileName.toLowerCase().endsWith(".pdf")) {
+                model.addAttribute("error", "Only PDF files are allowed.");
+                return "request";
+            }
+
+            if (file.getSize() > 20 * 1024 * 1024) {
+                model.addAttribute("error", "File size must be less than 20MB.");
+                return "request";
+            }
+
+            file.transferTo(new File(tempFilePath));
+        }
+
+        // =========================
+        // CASE 2: USE COMMON LEAVE LETTER
+        // =========================
+        else if ("leave-letter".equals(documentSource)) {
+
+            ClassPathResource leaveLetterResource =
+                    new ClassPathResource("templates/leave-letter.pdf");
+
+            if (!leaveLetterResource.exists()) {
+                model.addAttribute("error", "Leave letter template not found.");
+                return "request";
+            }
+
+            try (InputStream inputStream = leaveLetterResource.getInputStream()) {
+                Files.copy(
+                        inputStream,
+                        Paths.get(tempFilePath),
+                        StandardCopyOption.REPLACE_EXISTING
+                );
+            }
+
+            // Backend safeguard
+            printRequest.setDocumentName("Common Leave Letter");
+            printRequest.setPages(1);
+        }
+
+        else {
+            model.addAttribute("error", "Invalid document source selected.");
+            return "request";
+        }
+
+        session.setAttribute("tempFilePath", tempFilePath);
+
+    } catch (IOException e) {
+        e.printStackTrace();
+        model.addAttribute("error", "File processing failed.");
+        return "request";
+    }
+
+    double amount = calculateAmount(printRequest);
+    printRequest.setAmount(amount);
+
+    // PRG: redirect to preview page
+    redirectAttributes.addFlashAttribute("printRequest", printRequest);
+
+    return "redirect:/user/submit-preview";
+}
+
+@GetMapping("/user/submit-preview")
+public String showSubmitPreview(Model model) {
+
+    if (!model.containsAttribute("printRequest")) {
+        return "redirect:/user/request";
+    }
+
+    return "submit";
+}
+
     // 🔹 STEP 2: CONFIRM → FINAL SAVE
-    @PostMapping("/user/confirmRequest")
+@PostMapping("/user/confirmRequest")
 public String confirmRequest(
         @ModelAttribute("printRequest") PrintRequest printRequest,
-        Model model,
         SessionStatus sessionStatus,
         Principal principal,
-        HttpSession session) {
+        HttpSession session,
+        RedirectAttributes redirectAttributes) {
 
     // =========================
     // Attach Logged-in User
     // =========================
-
     String email = principal.getName();
 
     User user = userRepository.findByEmail(email)
@@ -556,57 +609,50 @@ public String confirmRequest(
     // =========================
     // Default Status
     // =========================
-
     printRequest.setStatus(RequestStatus.PENDING);
-
     printRequest.setPaymentStatus(PaymentStatus.UNPAID);
 
     // Save request
-    PrintRequest savedRequest =
-            printRequestRepository.save(printRequest);
+    PrintRequest savedRequest = printRequestRepository.save(printRequest);
 
     String tempFilePath =
-        (String) session.getAttribute("tempFilePath");
-
-    // System.out.println("Temp file path in confirmRequest: " + tempFilePath);
+            (String) session.getAttribute("tempFilePath");
 
     // =========================
     // SEND EMAIL TO ADMIN
     // =========================
-
     try {
-
         emailService.sendPrintRequestEmail(
-
                 "printapp.service@gmail.com",
-
                 savedRequest.getUser().getEmail(),
-
                 savedRequest.getDocumentName(),
-
                 savedRequest.getSided(),
-
                 savedRequest.getPages(),
-
                 savedRequest.getCopies(),
-
                 savedRequest.getAmount(),
-
                 tempFilePath
-
         );
-
     } catch (Exception e) {
-
         e.printStackTrace();
     }
 
     session.removeAttribute("tempFilePath");
 
-    model.addAttribute("printRequest", savedRequest);
+    // Put saved request into flash scope for redirect
+    redirectAttributes.addFlashAttribute("printRequest", savedRequest);
 
-    // Clear session
+    // Clear session attribute model
     sessionStatus.setComplete();
+
+    return "redirect:/user/confirmation";
+}
+
+    @GetMapping("/user/confirmation")
+public String showConfirmationPage(Model model) {
+
+    if (!model.containsAttribute("printRequest")) {
+        return "redirect:/user/request";
+    }
 
     return "confirmation";
 }
