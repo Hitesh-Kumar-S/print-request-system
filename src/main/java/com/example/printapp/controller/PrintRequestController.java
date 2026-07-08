@@ -623,15 +623,16 @@ public String confirmRequest(
     // =========================
     try {
         emailService.sendPrintRequestEmail(
-                "printapp.service@gmail.com",
-                savedRequest.getUser().getEmail(),
-                savedRequest.getDocumentName(),
-                savedRequest.getSided(),
-                savedRequest.getPages(),
-                savedRequest.getCopies(),
-                savedRequest.getAmount(),
-                tempFilePath
-        );
+        "printapp.service@gmail.com",
+        savedRequest.getUser().getEmail(),
+        savedRequest.getDocumentName(),
+        savedRequest.getColor(),
+        savedRequest.getSided(),
+        savedRequest.getPages(),
+        savedRequest.getCopies(),
+        savedRequest.getAmount(),
+        tempFilePath
+);
     } catch (Exception e) {
         e.printStackTrace();
     }

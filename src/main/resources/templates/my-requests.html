@@ -50,15 +50,17 @@
 
         <thead>
         <tr>
-            <th>Request ID</th>
-            <th>Document</th>
-            <th>Pages</th>
-            <th>Copies</th>
-            <th>Color</th>
-            <th>Amount</th>
-            <th>Created At</th>
-            <th>Status</th>
-            <th>Payment</th>
+    <th>ID</th>
+    <th>User</th>
+    <th>Document</th>
+    <th>Color</th>
+    <th>Print Type</th>
+    <th>Pages</th>
+    <th>Copies</th>
+    <th>Amount</th>
+    <th>Created At</th>
+    <th>Status</th>
+    <th>Payment</th>
         </tr>
         </thead>
 
@@ -66,22 +68,28 @@
 
         <tr th:each="request : ${requests}">
 
+            <tr th:each="request : ${requests}">
+
             <td th:text="${request.id}"></td>
 
+            <td th:text="${request.user.email}"></td>
+
             <td th:text="${request.documentName}"></td>
+
+            <td th:text="${request.color == 'bw' ? 'B&W' : 'Color'}"></td>
+
+            <td th:text="${request.sided == 'double' ? 'Front & Back' : 'One Side'}"></td>
 
             <td th:text="${request.pages}"></td>
 
             <td th:text="${request.copies}"></td>
 
-            <td th:text="${request.color}"></td>
-
             <td th:text="${request.amount}"></td>
 
             <td th:text="${#temporals.format(
-        request.createdAt,
-        'dd MMM yyyy, hh:mm a')}">
-</td>
+                    request.createdAt,
+                    'dd MMM yyyy, hh:mm a')}">
+            </td>
 
             <td>
 

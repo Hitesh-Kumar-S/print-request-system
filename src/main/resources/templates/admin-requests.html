@@ -187,17 +187,17 @@
         <thead>
 
         <tr>
-
-            <th>ID</th>
-            <th>User</th>
-            <th>Document</th>
-            <th>Pages</th>
-            <th>Copies</th>
-            <th>Amount</th>
-            <th>Created At</th>
-            <th>Status</th>
-            <th>Payment</th>
-
+    <th>ID</th>
+    <th>User</th>
+    <th>Document</th>
+    <th>Color</th>
+    <th>Print Type</th>
+    <th>Pages</th>
+    <th>Copies</th>
+    <th>Amount</th>
+    <th>Created At</th>
+    <th>Status</th>
+    <th>Payment</th>
         </tr>
 
         </thead>
@@ -211,6 +211,10 @@
             <td th:text="${request.user.email}"></td>
 
             <td th:text="${request.documentName}"></td>
+
+            <td th:text="${request.color == 'bw' ? 'B&W' : 'Color'}"></td>
+
+            <td th:text="${request.sided == 'double' ? 'Front & Back' : 'One Side'}"></td>
 
             <td th:text="${request.pages}"></td>
 

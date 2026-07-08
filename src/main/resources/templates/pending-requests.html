@@ -27,6 +27,7 @@
             padding: 14px;
             border-bottom: 1px solid #ccc;
             text-align: center;
+            vertical-align: middle;
         }
 
         th {
@@ -55,137 +56,123 @@
     <h2>Pending Print Requests</h2>
 
     <!-- =========================
-     ANALYTICS CARDS
-========================= -->
+         ANALYTICS CARDS
+    ========================= -->
+    <div class="analytics-container">
 
-<div class="analytics-container">
+        <!-- Total Requests -->
+        <div class="analytics-card">
+            <h3>Total Requests</h3>
+            <p th:text="${totalRequests}"></p>
+        </div>
 
-    <!-- Total Requests -->
-    <div class="analytics-card">
+        <!-- Pending -->
+        <div class="analytics-card">
+            <h3>Pending</h3>
+            <p th:text="${pendingRequests}"></p>
+        </div>
 
-        <h3>Total Requests</h3>
+        <!-- Approved -->
+        <div class="analytics-card">
+            <h3>Approved</h3>
+            <p th:text="${approvedRequests}"></p>
+        </div>
 
-        <p th:text="${totalRequests}"></p>
-
-    </div>
-
-    <!-- Pending -->
-    <div class="analytics-card">
-
-        <h3>Pending</h3>
-
-        <p th:text="${pendingRequests}"></p>
-
-    </div>
-
-    <!-- Approved -->
-    <div class="analytics-card">
-
-        <h3>Approved</h3>
-
-        <p th:text="${approvedRequests}"></p>
+        <!-- Revenue -->
+        <div class="analytics-card">
+            <h3>Revenue</h3>
+            <p>₹<span th:text="${totalRevenue}"></span></p>
+        </div>
 
     </div>
 
-    <!-- Revenue -->
-    <div class="analytics-card">
+    <div class="table-container">
+        <table>
 
-        <h3>Revenue</h3>
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>User</th>
+                <th>Document</th>
+                <th>Color</th>
+                <th>Print Type</th>
+                <th>Pages</th>
+                <th>Copies</th>
+                <th>Amount</th>
+                <th>Created At</th>
+                <th>Status</th>
+                <th>Payment</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
 
-        <p>
-            ₹<span th:text="${totalRevenue}"></span>
-        </p>
+            <tbody>
 
+            <tr th:each="request : ${requests}">
+
+                <td th:text="${request.id}"></td>
+
+                <td th:text="${request.user.email}"></td>
+
+                <td th:text="${request.documentName}"></td>
+
+                <td th:text="${request.color == 'bw' ? 'B&W' : 'Color'}"></td>
+
+                <td th:text="${request.sided == 'double' ? 'Front & Back' : 'One Side'}"></td>
+
+                <td th:text="${request.pages}"></td>
+
+                <td th:text="${request.copies}"></td>
+
+                <td th:text="${request.amount}"></td>
+
+                <td th:text="${#temporals.format(request.createdAt, 'dd MMM yyyy, hh:mm a')}"></td>
+
+                <!-- Status -->
+                <td>
+                    <span class="badge badge-pending"
+                          th:text="${request.status}">
+                    </span>
+                </td>
+
+                <!-- Payment -->
+                <td>
+                    <span class="badge"
+                          th:classappend="${request.paymentStatus.name() == 'PAID'} ? ' badge-paid' : ' badge-unpaid'"
+                          th:text="${request.paymentStatus}">
+                    </span>
+                </td>
+
+                <!-- Actions -->
+                <td>
+                    <a th:href="@{'/admin/approve/' + ${request.id}}"
+                       class="action-btn btn-approve">
+                        Approve
+                    </a>
+
+                    <br><br>
+
+                    <a th:href="@{'/admin/reject/' + ${request.id}}"
+                       class="action-btn btn-reject">
+                        Reject
+                    </a>
+                </td>
+
+            </tr>
+
+            </tbody>
+
+        </table>
     </div>
 
-</div>
-<div class="table-container">
-    <table>
-
-        <thead>
-
-        <tr>
-
-            <th>ID</th>
-            <th>User</th>
-            <th>Document</th>
-            <th>Pages</th>
-            <th>Copies</th>
-            <th>Amount</th>
-            <th>Payment</th>
-            <th>Actions</th>
-
-        </tr>
-
-        </thead>
-
-        <tbody>
-
-        <tr th:each="request : ${requests}">
-
-            <td th:text="${request.id}"></td>
-
-            <td th:text="${request.user.email}"></td>
-
-            <td th:text="${request.documentName}"></td>
-
-            <td th:text="${request.pages}"></td>
-
-            <td th:text="${request.copies}"></td>
-
-            <td th:text="${request.amount}"></td>
-
-            <td>
-
-    <span class="badge"
-          th:classappend="
-
-            ${request.paymentStatus.name() == 'PAID'} ?
-
-            ' badge-paid' :
-
-            ' badge-unpaid'"
-
-          th:text="${request.paymentStatus}">
-    </span>
-
-</td>
-
-            <td>
-
-    <!-- Approve -->
-    <a th:href="@{'/admin/approve/' + ${request.id}}"
-       class="action-btn btn-approve">
-
-        Approve
-
-    </a>
-
-    <br><br>
-
-    <!-- Reject -->
-    <a th:href="@{'/admin/reject/' + ${request.id}}"
-       class="action-btn btn-reject">
-
-        Reject
-
-    </a>
-
-</td>
-
-        </tr>
-
-        </tbody>
-
-    </table>
-</div>
     <br>
 
     <form th:action="@{/admin/dashboard}" method="get">
-    <button type="submit" class="small-btn btn-blue">
-        Back to Dashboard
-    </button>
-</form>
+        <button type="submit" class="small-btn btn-blue">
+            Back to Dashboard
+        </button>
+    </form>
+
 </div>
 
 <script src="/theme.js"></script>

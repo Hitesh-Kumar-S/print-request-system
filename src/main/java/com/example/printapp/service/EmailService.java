@@ -22,11 +22,12 @@ public class EmailService {
     // SEND PRINT REQUEST EMAIL
     // =========================
 
-    @Async("emailTaskExecutor")
+@Async("emailTaskExecutor")
 public void sendPrintRequestEmail(
         String toEmail,
         String userEmail,
         String documentName,
+        String color,
         String sided,
         int pages,
         int copies,
@@ -46,11 +47,18 @@ public void sendPrintRequestEmail(
         helper.setTo(toEmail);
         helper.setSubject("New Print Request Submitted");
 
+        String colorDisplay =
+                "bw".equalsIgnoreCase(color) ? "B&W" : "Color";
+
+        String sidedDisplay =
+                "double".equalsIgnoreCase(sided) ? "Front & Back" : "One Side";
+
         helper.setText(
                 "A new print request has been submitted.\n\n"
                         + "User Email: " + userEmail + "\n"
                         + "Document: " + documentName + "\n"
-                        + "Print Type: " + sided + "\n"
+                        + "Color: " + colorDisplay + "\n"
+                        + "Print Type: " + sidedDisplay + "\n"
                         + "Pages: " + pages + "\n"
                         + "Copies: " + copies + "\n"
                         + "Amount: ₹" + amount + "\n"
